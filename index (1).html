@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101815">
+  <meta name="description" content="Würfelbund – ein persönlicher Ausgangspunkt für eure Pen-and-Paper-Abenteuer.">
+  <title>Würfelbund · Dein Abenteuer beginnt hier</title>
+  <style>
+    :root{color-scheme:dark;--bg:#0c1311;--side:#111b17;--panel:#16211d;--panel2:#1b2923;--stroke:#344139;--stroke-soft:#28372f;--cream:#efe8d5;--muted:#aaaF9f;--gold:#d4ad65;--gold2:#edcb8e;--green:#9fb899;--red:#c98a77;--radius:16px;--sans:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--serif:Georgia,"Times New Roman",serif}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--cream);font-family:var(--sans);font-size:14px;line-height:1.55}body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;background:radial-gradient(ellipse at 80% 1%,#203a2a55,transparent 55%),radial-gradient(ellipse at 10% 90%,#42372220,transparent 48%)}button,input,textarea,select{font:inherit}button{cursor:pointer}button:disabled{opacity:.4;cursor:not-allowed}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid var(--gold2);outline-offset:3px}::selection{background:#b18a4d;color:#121a15}
+    .shell{min-height:100vh}.sidebar{position:fixed;inset:0 auto 0 0;width:263px;display:flex;flex-direction:column;background:linear-gradient(175deg,#14221c,#0e1613 80%);border-right:1px solid var(--stroke-soft);padding:31px 20px 22px;z-index:5}.brand{display:flex;align-items:center;gap:12px;padding:0 9px 36px}.brand-mark{width:39px;height:45px;display:grid;place-items:center;color:var(--gold);border:1px solid #b7975c88;clip-path:polygon(50% 0,97% 23%,97% 77%,50% 100%,3% 77%,3% 23%);background:#d2ac6530}.brand-mark svg{width:24px;height:24px}.brand-title{display:block;font:700 25px/1 var(--serif);letter-spacing:-.8px}.brand-sub{display:block;font-size:9px;letter-spacing:2.6px;color:var(--gold);margin-top:8px}.nav-caption{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:#7e9589;margin:4px 13px 15px;font-weight:750}.nav{display:grid;gap:5px}.nav-button{border:1px solid transparent;color:#aeb9ad;background:transparent;text-align:left;display:flex;gap:13px;align-items:center;padding:12px 14px;border-radius:10px;font-weight:560;transition:background .16s,color .16s}.nav-button:hover{background:#253329;color:var(--cream)}.nav-button.active{background:linear-gradient(90deg,#39432e,#283429);border-color:#536044;color:#f2dcae}.icon{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}.nav-button .icon{width:18px;height:18px}.side-bottom{margin-top:auto;border-top:1px solid var(--stroke-soft);padding:22px 9px 0}.realm-pill{display:inline-flex;align-items:center;gap:7px;color:#bbd0b5;font-size:11px;letter-spacing:.2px}.realm-pill:before{content:"";width:7px;height:7px;background:#86bb8c;border-radius:50%;box-shadow:0 0 12px #7dbf8999}.side-help{color:#88988c;font-size:11px;line-height:1.65;max-width:192px;margin:10px 0 0}
+    .main{margin-left:263px;min-height:100vh;max-width:1700px;padding:0 52px 70px}.topbar{height:88px;border-bottom:1px solid var(--stroke-soft);display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:43px}.breadcrumb{display:flex;gap:10px;align-items:center;color:#94a598;font-size:12px}.breadcrumb strong{color:#e1d6bd;font-weight:560}.breadcrumb .slash{color:#5a6d5e}.topbar-right{display:flex;align-items:center;gap:15px;color:#9aab9c;font-size:12px}.topbar-right .avatar{width:36px;height:36px;border:1px solid #6b6d4b;border-radius:50%;display:grid;place-items:center;color:var(--gold);font:italic 19px var(--serif);background:#302e22}.topbar-right time{white-space:nowrap}.page{display:none;animation:appear .23s ease-out}.page.active{display:block}@keyframes appear{from{opacity:.55;transform:translateY(5px)}to{opacity:1;transform:none}}
+    h1,h2,h3,p{margin-top:0}h1,h2,.serif{font-family:var(--serif);font-weight:500}h1{font-size:clamp(32px,4.1vw,49px);line-height:1.1;letter-spacing:-1px;margin:14px 0}h2{font-size:27px;letter-spacing:-.4px}h3{font-size:19px;letter-spacing:-.2px}.eyebrow{color:var(--gold);text-transform:uppercase;font-size:10px;font-weight:750;letter-spacing:3px}.muted{color:var(--muted)}.page-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:30px}.page-heading p{max-width:650px;color:#a7b5a7;margin:8px 0 0}.page-heading h1{margin-bottom:0}.button{display:inline-flex;justify-content:center;align-items:center;gap:9px;border-radius:9px;border:1px solid #6f7858;background:#b99557;color:#172017;font-weight:730;padding:11px 17px;min-height:42px;transition:transform .17s,background .17s,border-color .17s;text-decoration:none;white-space:nowrap}.button:hover:not(:disabled){transform:translateY(-1px);background:#e0bd79}.button .icon{width:16px;height:16px}.button.secondary{color:#e3d6b8;background:#213029;border-color:#576b54}.button.secondary:hover:not(:disabled){background:#314537}.button.ghost{background:transparent;color:#d6d8ca;border-color:#3d5144}.button.ghost:hover:not(:disabled){background:#26352b}.button.danger{color:#e3ada0;border-color:#83594c;background:#3a2926}.button.danger:hover{background:#53342e}.button.small{padding:7px 11px;min-height:33px;font-size:12px}.button.icon-only{padding:7px;width:34px;min-height:34px}.button-row{display:flex;align-items:center;flex-wrap:wrap;gap:9px}
+    .hero{position:relative;display:flex;min-height:270px;overflow:hidden;border:1px solid #5a6049;border-radius:19px;background:radial-gradient(ellipse at 75% 47%,#63714830,transparent 39%),linear-gradient(117deg,#26382b,#1e2e25 48%,#2e3525);padding:36px 42px;margin-bottom:24px;isolation:isolate}.hero:before{content:"";position:absolute;inset:14px;border:1px solid #bda06b3b;border-radius:9px;pointer-events:none}.hero:after{content:"";position:absolute;right:-110px;top:-180px;height:530px;width:530px;border:1px solid #c9b17d20;border-radius:50%;box-shadow:0 0 0 45px #c9b17d0b,0 0 0 92px #c9b17d08;z-index:-1}.hero-copy{position:relative;z-index:1;max-width:680px}.hero h1{max-width:590px;margin:14px 0 15px}.hero p{max-width:500px;color:#b9c6b4;margin-bottom:25px;font-size:14px}.hero .button-row{gap:11px}.hero-die{position:absolute;right:7.4%;top:50%;transform:translateY(-50%) rotate(-11deg);width:180px;height:210px;opacity:.8;filter:drop-shadow(0 17px 18px #0006)}.hero-die svg{width:100%;height:100%;overflow:visible}.hero-die text{font:45px var(--serif);fill:#edca82;dominant-baseline:middle;text-anchor:middle}.overview-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:0 0 35px}.stat-card{padding:20px 24px;border:1px solid var(--stroke-soft);border-radius:12px;background:#17221d;display:flex;gap:18px;align-items:center}.stat-emblem{width:43px;height:43px;display:grid;place-items:center;border-radius:11px;color:#d8ba78;background:#4b4a303d;border:1px solid #746d4949}.stat-card small{display:block;color:#91a294;font-size:11px;margin-bottom:4px}.stat-card strong{font:28px/1 var(--serif);color:#f0e4c8}.section-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 16px}.section-title h2{font-size:25px;margin:0}.section-title button{border:none;background:none;color:var(--gold);font-size:12px;cursor:pointer}.overview-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(270px,1fr);gap:26px}.quick-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.quick-card{min-height:151px;display:flex;flex-direction:column;align-items:flex-start;text-align:left;position:relative;overflow:hidden;background:#18241e;border:1px solid #34483a;border-radius:12px;padding:20px;color:var(--cream);transition:transform .18s,border-color .18s,background .18s}.quick-card:hover{transform:translateY(-3px);border-color:#867954;background:#202f24}.quick-card .icon{width:23px;height:23px;color:#d9ba79}.quick-card h3{font:18px var(--serif);margin:15px 0 5px}.quick-card p{font-size:11px;color:#93a496;line-height:1.5;margin:0}.quick-card .arrow{position:absolute;right:17px;top:15px;color:#839580;font-size:17px}.glass-card{background:linear-gradient(145deg,#1b2922,#17231d);border:1px solid #39483a;border-radius:13px;padding:21px}.glass-card h3{margin:0 0 14px}.journal-preview{min-height:310px}.divider{border:0;border-top:1px solid #39463b;margin:15px 0}.entry{display:flex;align-items:flex-start;gap:11px;padding:11px 0;border-bottom:1px solid var(--stroke-soft)}.entry:last-child{border:0}.entry .entry-dot{width:29px;height:29px;display:grid;place-items:center;border:1px solid #625f43;background:#393a29;border-radius:50%;color:var(--gold);flex:none;font:14px var(--serif)}.entry strong{font-weight:650;color:#e7dec7}.entry p{color:#93a494;font-size:12px;margin:4px 0 0;white-space:normal;overflow-wrap:anywhere}.empty{display:grid;justify-items:center;text-align:center;align-content:center;min-height:220px;padding:24px;border:1px dashed #435347;border-radius:13px;background:#17221d7b}.empty .empty-icon{display:grid;place-items:center;width:58px;height:58px;border:1px solid #655e40;background:#302f24;color:var(--gold);border-radius:50%;margin-bottom:13px}.empty-icon .icon{width:28px;height:28px}.empty h3{margin:0 0 5px}.empty p{color:#98a698;margin:0 0 17px;max-width:320px;font-size:12px}
+    .panel-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(260px,.8fr);gap:22px}.roll-console{border:1px solid #536348;border-radius:16px;background:radial-gradient(circle at 80% 25%,#53614436,transparent 45%),linear-gradient(145deg,#1e2e25,#142019);padding:26px}.roll-orb{width:min(235px,70vw);height:235px;margin:8px auto 22px;display:grid;place-items:center;position:relative}.roll-orb svg{position:absolute;inset:0;width:100%;height:100%;filter:drop-shadow(0 18px 15px #0006)}.roll-orb .roll-result{position:relative;color:#f2d5a0;font:72px var(--serif);letter-spacing:-4px;text-shadow:0 6px 13px #050b08;z-index:1}.roll-orb.rolling{animation:bounce .38s ease-out}@keyframes bounce{0%{transform:rotate(-12deg) scale(.9)}60%{transform:rotate(5deg) scale(1.08)}100%{transform:rotate(0) scale(1)}}.dice-picker{display:flex;flex-wrap:wrap;gap:9px;justify-content:center}.die-select{padding:11px 13px;min-width:55px;background:#182820;border:1px solid #4c624f;border-radius:9px;color:#d2dccf;font-weight:700}.die-select.selected,.die-select:hover{background:#b99a5f;color:#18221a;border-color:#e4c787}.roll-controls{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin:22px auto 15px;max-width:340px}.field{display:grid;gap:7px}.field label{font-size:11px;font-weight:710;letter-spacing:.4px;color:#bec9b7}.field input,.field textarea,.field select{min-height:43px;width:100%;border-radius:8px;border:1px solid #4b5d4d;background:#101b16;color:#f0e7d6;padding:10px 12px;outline-offset:2px}.field textarea{resize:vertical;min-height:140px}.field input:focus,.field textarea:focus,.field select:focus{border-color:#c9aa69;outline:1px solid #c9aa69}.roll-console .button{width:100%;max-width:340px;margin:0 auto;display:flex;font-size:15px;padding:13px}.roll-hint{color:#96a697;text-align:center;margin:15px 0 0;font-size:12px}.history-row{display:flex;justify-content:space-between;align-items:center;gap:15px;border-bottom:1px solid #314235;padding:13px 0}.history-row:last-child{border-bottom:0}.history-row strong{font:24px var(--serif);color:#e9cb8b}.history-row p{margin:3px 0 0;color:#98a597;font-size:11px;overflow-wrap:anywhere}.history-row small{color:#8e9e90;white-space:nowrap}.history-list{max-height:500px;overflow-y:auto}
+    .cards-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}.character-card{position:relative;min-height:225px;overflow:hidden;background:linear-gradient(145deg,#243428,#18261e);border:1px solid #485a44;border-radius:13px;padding:22px;display:flex;flex-direction:column}.character-card:before{content:"";position:absolute;right:-28px;top:-29px;width:100px;height:100px;border:1px solid #d2ad6538;border-radius:50%;box-shadow:0 0 0 25px #d2ad650a}.level-tag{display:inline-block;align-self:flex-start;border:1px solid #a88b5855;border-radius:99px;padding:3px 9px;color:#d1b879;background:#493e274d;font-size:10px;letter-spacing:.7px;font-weight:700}.character-card h3{font-size:26px;margin:29px 0 2px;overflow-wrap:anywhere}.character-card p{font-size:12px;color:#afc0aa;margin-bottom:18px}.character-actions{display:flex;gap:8px;margin-top:auto}.small-note{background:#1b2921;border:1px solid #3c5142;border-radius:12px;padding:20px;min-height:200px;display:flex;flex-direction:column}.small-note h3{margin:0 0 8px;overflow-wrap:anywhere}.small-note .note-body{white-space:pre-wrap;overflow-wrap:anywhere;color:#a9b9a8;font-size:13px;line-height:1.6;flex:1}.note-date{font-size:10px;color:#d0b275;letter-spacing:.4px;margin-bottom:12px}.note-actions{margin-top:15px;display:flex;gap:8px}
+    .encounter{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(300px,.7fr);gap:20px}.turn-banner{background:linear-gradient(100deg,#364832,#24362b);border:1px solid #6e764e;border-radius:12px;padding:22px;display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:15px}.turn-banner .current-name{font:26px var(--serif);margin:5px 0;overflow-wrap:anywhere}.turn-banner .eyebrow{font-size:9px}.turn-badge{background:#baa06820;border:1px solid #c4a46c5c;border-radius:9px;padding:9px 14px;color:#e6cb8a;text-align:center;font-weight:700;white-space:nowrap}.actor-row{display:flex;align-items:center;gap:13px;padding:13px 16px;border:1px solid #3b4d3f;border-radius:10px;background:#1a2920;margin:8px 0}.actor-row.current{border-color:#c1a569;background:#2b3829}.actor-score{height:43px;width:43px;display:grid;place-items:center;background:#0e1913;border:1px solid #5d6a4f;border-radius:8px;color:#dfc787;font:24px var(--serif);flex:none}.actor-info{min-width:0;flex:1}.actor-info strong{display:block;font-weight:650;overflow-wrap:anywhere}.actor-info small{color:#90a494}.actor-info .turn-indicator{color:#ddc184;font-size:10px}.actor-delete{border:0;background:none;color:#a9b2a8;padding:7px}.actor-delete:hover{color:#ef9b85}.inline-form{display:grid;gap:13px}.inline-form .button{width:100%}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.future-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:30px}.future-card{border:1px dashed #465347;border-radius:12px;background:#17221d;padding:18px}.future-card .icon{color:var(--gold);margin-bottom:9px}.future-card h3{font-size:17px;margin:0 0 5px}.future-card p{color:#95a69a;font-size:12px;margin:0}.coming{font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:#bfa76c;margin-bottom:8px;display:inline-block}
+    .setting-card{padding:24px;border-radius:13px;background:#18251e;border:1px solid #3b5140;margin-bottom:14px}.setting-card h3{margin:0 0 7px}.setting-card p{color:#a5b3a5;font-size:12px;max-width:650px}.setting-card .button-row{margin-top:19px}.warning{border-left:3px solid #b99557;padding:12px 15px;background:#b9955710;color:#cabf9c;font-size:12px;border-radius:0 7px 7px 0;line-height:1.6}.warning strong{color:#efd9a2}.footnote{color:#839689;font-size:11px;margin-top:29px;text-align:center}.hidden{display:none!important}.badge{display:inline-flex;align-items:center;border-radius:90px;border:1px solid #5e6e50;color:#b8cfae;font-size:10px;letter-spacing:.5px;padding:4px 10px}
+    dialog{width:min(500px,calc(100vw - 30px));max-height:90vh;overflow:auto;border:1px solid #8b875e;background:linear-gradient(145deg,#1b2a21,#121e18);border-radius:17px;color:var(--cream);padding:28px;box-shadow:0 25px 85px #000b}dialog::backdrop{background:#020805bd;backdrop-filter:blur(5px)}dialog h2{margin:0 0 6px;font-size:29px}dialog .intro{color:#a9b9ab;font-size:12px;margin-bottom:20px}dialog form{display:grid;gap:14px}dialog .dialog-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:8px}.toast{position:fixed;right:24px;bottom:24px;border:1px solid #8b9a74;background:#24382b;color:#eae4cb;box-shadow:0 12px 35px #0009;border-radius:10px;padding:13px 18px;z-index:20;max-width:min(420px,calc(100vw - 40px));opacity:0;transform:translateY(12px);pointer-events:none;transition:opacity .2s,transform .2s}.toast.show{opacity:1;transform:none}
+    .cloud-strip{border:1px solid #5a7058;background:linear-gradient(120deg,#23392a,#19271f);border-radius:14px;padding:17px 19px;margin:-16px 0 29px;display:flex;align-items:center;justify-content:space-between;gap:16px}.cloud-strip h3{font-size:18px;margin:2px 0 3px}.cloud-strip p{margin:0;color:#aebfab;font-size:12px}.cloud-strip .eyebrow{font-size:9px}.cloud-strip .button-row{flex:none}.online-badge{font-size:10px;color:#b9d8b1;letter-spacing:.5px}.campaign-lobby{display:none;border:1px solid #51634c;background:linear-gradient(145deg,#203227,#15231b);padding:22px;border-radius:14px;margin:-13px 0 28px}.campaign-lobby.open{display:block}.campaign-lobby-head{display:flex;justify-content:space-between;align-items:flex-start;gap:15px;margin-bottom:14px}.campaign-lobby-head h2{margin:5px 0;font-size:25px}.campaign-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.campaign-tile{border:1px solid #486046;background:#18281e;border-radius:11px;padding:16px;text-align:left;display:grid;gap:9px;color:var(--cream)}.campaign-tile.active{border-color:#c0a467;background:#283727}.campaign-tile strong{font:20px var(--serif);overflow-wrap:anywhere}.campaign-tile p{margin:0;font-size:11px;color:#a1b4a2;overflow-wrap:anywhere}.campaign-tile .button-row{margin-top:3px}.online-status{border-radius:10px;border:1px dashed #5a7357;padding:14px;color:#a2b7a4;font-size:12px;line-height:1.55}.online-status strong{color:#e4d5af}.cloud-note{color:#b1c1ad;font-size:11px;margin:12px 0 0}.cloud-auth-layout{display:grid;gap:12px}.cloud-auth-layout .field input{color:var(--cream)}.inline-link{background:none;border:0;padding:0;color:#d3b475;text-decoration:underline;text-underline-offset:3px}.cloud-strip .button{font-size:12px}.cloud-invite{display:none;border:1px solid #957954;background:#65522c26;color:#e6d3a9;padding:10px 13px;border-radius:9px;margin-bottom:12px;font-size:12px}.cloud-invite.visible{display:block}
+    @media(max-width:1150px){.main{padding:0 30px 55px}.hero-die{opacity:.28;right:-2%}.cards-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.encounter{grid-template-columns:1fr}.future-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:800px){.sidebar{position:relative;width:100%;height:auto;padding:14px 18px 12px;border-right:0;border-bottom:1px solid var(--stroke-soft)}.brand{padding:0 0 12px}.brand-mark{height:36px;width:33px}.brand-title{font-size:22px}.brand-sub{margin-top:5px}.nav-caption,.side-bottom{display:none}.nav{display:flex;gap:5px;overflow:auto;padding-bottom:3px;scrollbar-width:none}.nav::-webkit-scrollbar{display:none}.nav-button{flex:none;padding:9px 11px;font-size:12px;gap:7px}.nav-button .icon{width:15px;height:15px}.main{margin:0;padding:0 21px 46px}.topbar{height:58px;margin-bottom:28px}.hero{padding:28px;min-height:265px}.overview-grid{grid-template-columns:1fr}.page-heading{align-items:flex-start}.topbar-right time{display:none}.campaign-list{grid-template-columns:1fr}}
+    @media(max-width:550px){.main{padding:0 15px 40px}.topbar{margin-bottom:25px}.hero{padding:24px 22px;min-height:290px}.hero:before{inset:9px}.hero h1{font-size:35px}.hero-die{width:160px;right:-48px;top:51%;opacity:.17}.overview-stats{gap:8px}.stat-card{padding:13px 10px;gap:6px;flex-direction:column;text-align:center}.stat-emblem{width:32px;height:32px}.stat-emblem .icon{width:16px;height:16px}.stat-card strong{font-size:24px}.quick-grid{gap:9px}.quick-card{padding:15px;min-height:156px}.quick-card h3{font-size:16px}.panel-grid,.cards-grid,.future-grid{grid-template-columns:1fr}.page-heading{flex-direction:column;gap:15px}.page-heading h1{font-size:36px}.roll-console{padding:15px}.roll-orb{height:185px;width:185px}.roll-orb .roll-result{font-size:57px}.die-select{min-width:43px;padding:9px 10px}.form-grid{grid-template-columns:1fr}.turn-banner{padding:15px}.turn-banner .current-name{font-size:22px}.dialog-actions{flex-wrap:wrap}.topbar-right .avatar{display:none}.cloud-strip{flex-direction:column;align-items:flex-start;margin-top:-10px}.campaign-lobby-head{flex-direction:column}}
+    @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+  </style>
+</head>
+<body>
+  <svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden" xmlns="http://www.w3.org/2000/svg">
+    <symbol id="i-crown" viewBox="0 0 24 24"><path d="m3 7 4.5 4 4.5-6 4.5 6L21 7l-1.7 11H4.7L3 7Z"/><path d="M5 21h14"/></symbol>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10H3V10Z"/><path d="M9 20v-7h6v7"/></symbol>
+    <symbol id="i-dice" viewBox="0 0 24 24"><path d="m12 2 9 7-3.4 11H6.4L3 9l9-7Z"/><path d="m3 9 9 5 9-5M12 14v8M12 2v12"/></symbol>
+    <symbol id="i-people" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20v-3a6 6 0 0 1 12 0v3H3ZM17 5a3 3 0 0 1 0 6M17 14a5 5 0 0 1 4 5v1h-4"/></symbol>
+    <symbol id="i-swords" viewBox="0 0 24 24"><path d="m3 3 13 13m-5-1-4 4m10-3 4 4M21 3 8 16m5-1 4 4m-10-3-4 4M18 3h3v3M3 3h3"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 6C9 4 5 4 2 5v15c4-1 7-1 10 1 3-2 6-2 10-1V5c-3-1-7-1-10 1v15"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="m10 2-.5 2.5-2.1.9-2.2-1.3-2 3.5 1.9 1.7v2.4l-1.9 1.7 2 3.5 2.2-1.3 2.1.9.5 2.5h4l.5-2.5 2.1-.9 2.2 1.3 2-3.5-1.9-1.7V9.3l1.9-1.7-2-3.5-2.2 1.3-2.1-.9L14 2h-4Z"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+    <symbol id="i-scroll" viewBox="0 0 24 24"><path d="M6 4h13v13a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V7a3 3 0 0 1 6 0v11M9 8h7M10 12h6"/></symbol>
+    <symbol id="i-archive" viewBox="0 0 24 24"><path d="M3 5h18v5H3zM5 10v11h14V10M10 14h4"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="m12 2 9 4v6c0 6-4 8-9 10-5-2-9-4-9-10V6l9-4Z"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="i-map" viewBox="0 0 24 24"><path d="m3 5 6-2 6 2 6-2v16l-6 2-6-2-6 2V5ZM9 3v16M15 5v16"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3m3 0-1 14H7L6 7m4 4v6m4-6v6"/></symbol>
+  </svg>
+
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand"><span class="brand-mark"><svg class="icon"><use href="#i-crown"></use></svg></span><div><span class="brand-title">Würfelbund</span><span class="brand-sub">DEIN ABENTEUER</span></div></div>
+      <div class="nav-caption">Die Taverne</div>
+      <nav class="nav" aria-label="Hauptnavigation">
+        <button class="nav-button active" data-view="overview"><svg class="icon"><use href="#i-home"></use></svg>Übersicht</button>
+        <button class="nav-button" data-view="dice"><svg class="icon"><use href="#i-dice"></use></svg>Würfel</button>
+        <button class="nav-button" data-view="characters"><svg class="icon"><use href="#i-people"></use></svg>Charaktere</button>
+        <button class="nav-button" data-view="combat"><svg class="icon"><use href="#i-swords"></use></svg>Kampf</button>
+        <button class="nav-button" data-view="journal"><svg class="icon"><use href="#i-book"></use></svg>Chronik</button>
+        <button class="nav-button" data-view="settings"><svg class="icon"><use href="#i-settings"></use></svg>Einstellungen</button>
+      </nav>
+      <div class="side-bottom"><span class="realm-pill">Lokaler Spielstand</span><p class="side-help">Ein sicherer Platz für deine Ideen – gespeichert in diesem Browser, noch nicht mit Freunden synchronisiert.</p></div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar"><div class="breadcrumb"><span>Würfelbund</span><span class="slash">/</span><strong id="breadcrumb-name">Übersicht</strong></div><div class="topbar-right"><time id="today"></time><span class="badge">Version 0.2</span><span class="avatar" aria-hidden="true">W</span></div></header>
+
+      <section class="cloud-strip" aria-label="Würfelbund Online">
+        <div><span class="eyebrow">✦ &nbsp; Würfelbund Online · Beta</span><h3 id="cloud-headline">Kampagnen gemeinsam organisieren</h3><p id="cloud-subline">Melde dich an, erstelle eine Kampagne oder tritt deinen Freunden bei.</p></div>
+        <div class="button-row"><button class="button secondary" id="cloud-toggle" type="button">Kampagnen <svg class="icon"><use href="#i-arrow"></use></svg></button><button class="button" id="cloud-auth-button" type="button">Anmelden</button></div>
+      </section>
+      <section class="campaign-lobby" id="campaign-lobby" aria-label="Online-Kampagnen">
+        <div class="campaign-lobby-head"><div><span class="eyebrow">Dein Online-Spielbereich</span><h2>Meine Kampagnen</h2><p class="muted" style="font-size:12px;margin:0">Eigene und beigetretene Kampagnen an einem Ort.</p></div><div class="button-row"><button class="button small secondary" id="new-online-campaign" type="button">+ Kampagne erstellen</button><button class="button small ghost" id="join-online-campaign" type="button">Beitreten</button></div></div>
+        <div class="cloud-invite" id="cloud-invite"></div>
+        <div id="cloud-campaign-list" class="online-status">Bitte melde dich an, um deine Kampagnen zu sehen.</div>
+        <p class="cloud-note">Aktuelle Ausbaustufe: Konten, Kampagnen und Einladungslinks sind online. Charaktere, Chronik, Würfel und Initiative bleiben noch lokal im Browser und werden erst mit den nächsten Versionen synchronisiert. Die eigentliche DM-Key-Einlösung folgt mit gesonderter Sicherheitsprüfung.</p>
+      </section>
+
+      <section id="view-overview" class="page active" aria-labelledby="overview-heading">
+        <div class="page-heading"><div><span class="eyebrow">Willkommen zurück, Abenteurer</span><h1 id="overview-heading">Deine Taverne.</h1><p>Ein Ort für Geschichten, Entscheidungen und Würfelglück. Das hier ist das Fundament eurer nächsten Kampagne.</p></div></div>
+        <div class="hero"><div class="hero-copy"><span class="eyebrow">✦ &nbsp; Eure Geschichte wartet</span><h1 id="hero-title">Noch ist das Buch leer.</h1><p>Versammelt eure Gruppe, haltet die ersten Geschichten fest und lasst die Würfel über euer Schicksal entscheiden.</p><div class="button-row"><button class="button" data-action="roll-d20"><svg class="icon"><use href="#i-dice"></use></svg>W20 würfeln</button><button class="button secondary" data-action="rename-campaign">Kampagne benennen <svg class="icon"><use href="#i-arrow"></use></svg></button></div></div><div class="hero-die" aria-hidden="true"><svg viewBox="0 0 200 230"><path d="M100 9 185 72 152 190H48L15 72Z" fill="#18261d" stroke="#d6b776" stroke-width="4"/><path d="M15 72 100 103 185 72M100 9v94M100 103l52 87M100 103 48 190M15 72l33 118" stroke="#d6b776" stroke-width="3" fill="none"/><path d="M100 103 152 190H48Z" fill="#9e86502e"/><text x="100" y="149">20</text></svg></div></div>
+        <div class="overview-stats"><div class="stat-card"><span class="stat-emblem"><svg class="icon"><use href="#i-people"></use></svg></span><div><small>Charaktere</small><strong id="stat-characters">0</strong></div></div><div class="stat-card"><span class="stat-emblem"><svg class="icon"><use href="#i-book"></use></svg></span><div><small>Chronikeinträge</small><strong id="stat-notes">0</strong></div></div><div class="stat-card"><span class="stat-emblem"><svg class="icon"><use href="#i-dice"></use></svg></span><div><small>Würfe</small><strong id="stat-rolls">0</strong></div></div></div>
+        <div class="overview-grid"><div><div class="section-title"><h2>Was steht heute an?</h2></div><div class="quick-grid"><button class="quick-card" data-view="dice"><svg class="icon"><use href="#i-dice"></use></svg><span class="arrow">↗</span><h3>Schicksal würfeln</h3><p>W4 bis W100 · mit Modifikator</p></button><button class="quick-card" data-action="new-character"><svg class="icon"><use href="#i-people"></use></svg><span class="arrow">↗</span><h3>Held erstellen</h3><p>Halte die wichtigsten Eckdaten fest</p></button><button class="quick-card" data-view="combat"><svg class="icon"><use href="#i-swords"></use></svg><span class="arrow">↗</span><h3>Initiative führen</h3><p>Behalte die Kampfrunden im Blick</p></button><button class="quick-card" data-action="new-note"><svg class="icon"><use href="#i-book"></use></svg><span class="arrow">↗</span><h3>Chronik schreiben</h3><p>Erinnerungen und Geheimnisse notieren</p></button></div></div><div><div class="section-title"><h2>Letzte Spuren</h2><button data-view="journal">Zur Chronik →</button></div><div class="glass-card journal-preview" id="overview-notes"></div></div></div>
+      </section>
+
+      <section id="view-dice" class="page" aria-labelledby="dice-heading"><div class="page-heading"><div><span class="eyebrow">Das Schicksal entscheidet</span><h1 id="dice-heading">Die Würfelkammer.</h1><p>Ob kritischer Treffer oder dramatischer Fehlschlag – hier fallen die Entscheidungen.</p></div></div><div class="panel-grid"><div class="roll-console"><div class="roll-orb" id="roll-orb"><svg viewBox="0 0 230 230" aria-hidden="true"><path d="M115 10 210 80 174 210H56L20 80Z" fill="#192b20" stroke="#bc9a62" stroke-width="4"/><path d="M20 80 115 117 210 80M115 10v107M115 117 174 210M115 117 56 210M20 80l36 130" fill="none" stroke="#7c815b" stroke-width="3"/></svg><span class="roll-result" id="roll-result" aria-live="polite">20</span></div><div class="dice-picker" id="dice-picker" role="group" aria-label="Würfel wählen"><button class="die-select" data-sides="4">W4</button><button class="die-select" data-sides="6">W6</button><button class="die-select" data-sides="8">W8</button><button class="die-select" data-sides="10">W10</button><button class="die-select" data-sides="12">W12</button><button class="die-select selected" data-sides="20">W20</button><button class="die-select" data-sides="100">W100</button></div><div class="roll-controls"><div class="field"><label for="dice-count">Anzahl</label><input id="dice-count" type="number" min="1" max="20" value="1"></div><div class="field"><label for="dice-mod">Modifikator (+/−)</label><input id="dice-mod" type="number" min="-100" max="100" value="0"></div></div><button id="roll-button" class="button"><svg class="icon"><use href="#i-dice"></use></svg>Würfeln</button><p class="roll-hint" id="roll-detail">Wähle einen Würfel und fordere dein Glück heraus.</p></div><div class="glass-card"><div class="section-title"><h2>Letzte Würfe</h2></div><div class="history-list" id="roll-history"></div></div></div></section>
+
+      <section id="view-characters" class="page" aria-labelledby="characters-heading"><div class="page-heading"><div><span class="eyebrow">Die Gefährten</span><h1 id="characters-heading">Eure Heldengruppe.</h1><p>Ein kleines Register eurer Spielfiguren. Vollständige Charakterbögen können später hier einziehen.</p></div><button class="button" data-action="new-character"><svg class="icon"><use href="#i-plus"></use></svg>Charakter hinzufügen</button></div><div class="cards-grid" id="character-list"></div></section>
+
+      <section id="view-combat" class="page" aria-labelledby="combat-heading"><div class="page-heading"><div><span class="eyebrow">Wenn Worte nicht mehr reichen</span><h1 id="combat-heading">Die Kampfleiste.</h1><p>Initiative erfassen, Reihenfolge verfolgen, nächste Runde starten – ohne die Übersicht zu verlieren.</p></div></div><div class="encounter"><div><div class="turn-banner"><div><span class="eyebrow">Aktuell am Zug</span><div class="current-name" id="current-actor">Noch niemand</div><span class="muted" id="turn-summary">Füge Kämpfer hinzu, um zu starten.</span></div><div class="turn-badge">Runde <span id="round-number">1</span></div></div><div class="button-row" style="margin-bottom:17px"><button class="button" id="next-turn"><svg class="icon"><use href="#i-arrow"></use></svg>Nächster Zug</button><button class="button ghost" id="restart-combat">Neustart</button><button class="button ghost" id="clear-combat">Leeren</button></div><div id="actor-list"></div></div><div class="glass-card"><h2>Kämpfer hinzufügen</h2><form id="actor-form" class="inline-form"><div class="field"><label for="actor-from-party">Aus Heldengruppe übernehmen</label><select id="actor-from-party"><option value="">– Eigenen Namen eingeben –</option></select></div><div class="field"><label for="actor-name">Name</label><input id="actor-name" maxlength="60" placeholder="z. B. Goblinwache"></div><div class="field"><label for="actor-initiative">Initiative (leer = W20)</label><input id="actor-initiative" type="number" min="-50" max="100" placeholder="Automatisch würfeln"></div><button class="button" type="submit"><svg class="icon"><use href="#i-plus"></use></svg>Hinzufügen</button></form><p class="muted" style="font-size:11px;margin:16px 0 0">Gleiche Initiative? Die bereits erfasste Figur bleibt vorne.</p></div></div></section>
+
+      <section id="view-journal" class="page" aria-labelledby="journal-heading"><div class="page-heading"><div><span class="eyebrow">Geschichten, die bleiben</span><h1 id="journal-heading">Die Chronik.</h1><p>Notizen zu Sitzungen, Orten, Geheimnissen und dem, was niemand vergessen sollte.</p></div><button class="button" data-action="new-note"><svg class="icon"><use href="#i-plus"></use></svg>Eintrag schreiben</button></div><div class="cards-grid" id="journal-list"></div></section>
+
+      <section id="view-settings" class="page" aria-labelledby="settings-heading"><div class="page-heading"><div><span class="eyebrow">Hinter den Kulissen</span><h1 id="settings-heading">Deine Taverne einrichten.</h1><p>Verwalte den Namen eurer Kampagne und sichere deinen lokalen Spielstand.</p></div></div><div class="setting-card"><h3>Kampagne</h3><p id="current-campaign-name">Noch unbenannt</p><div class="button-row"><button class="button secondary" data-action="rename-campaign">Namen bearbeiten</button></div></div><div class="setting-card"><h3>Spielstand sichern</h3><p>Alle Charaktere, Chronikeinträge, Würfe und Kampfwerte liegen in diesem Browser. Mit dem Export kannst du eine Sicherung als JSON-Datei anlegen und sie auf einem anderen Gerät importieren.</p><div class="button-row"><button class="button secondary" id="export-data"><svg class="icon"><use href="#i-archive"></use></svg>Spielstand exportieren</button><button class="button ghost" id="import-data">Spielstand importieren</button><input class="hidden" id="import-file" type="file" accept=".json,application/json"></div></div><div class="warning"><strong>Wichtig für eure private Runde:</strong> GitHub Pages stellt diese Webseite öffentlich bereit. Eure hier eingegebenen Daten bleiben nur auf dem jeweiligen Gerät gespeichert; andere Spieler sehen sie nicht automatisch. Für gemeinsame, geschützte Räume mit Live-Synchronisation braucht die Seite später Anmeldung und einen Server oder einen passenden Cloud-Dienst.</div><div class="setting-card" style="margin-top:15px"><h3>Lokale Daten zurücksetzen</h3><p>Entfernt den kompletten Spielstand aus diesem Browser. Exportiere ihn vorher, wenn du ihn behalten möchtest.</p><div class="button-row"><button class="button danger" id="reset-data">Lokalen Spielstand löschen</button></div></div><div class="section-title" style="margin-top:37px"><h2>Was später möglich ist</h2></div><div class="future-grid" style="margin-top:0"><div class="future-card"><span class="coming">Geplant</span><svg class="icon"><use href="#i-shield"></use></svg><h3>Charakterbögen</h3><p>Attribute, Inventar, Zauber und Trefferpunkte.</p></div><div class="future-card"><span class="coming">Geplant</span><svg class="icon"><use href="#i-map"></use></svg><h3>Virtueller Spieltisch</h3><p>Karten, Token und gemeinsame Kämpfe.</p></div><div class="future-card"><span class="coming">Geplant</span><svg class="icon"><use href="#i-people"></use></svg><h3>Gruppenräume</h3><p>Einladung, Rollen und synchronisierte Sitzungen.</p></div></div></section>
+      <p class="footnote">✦ &nbsp; Würfelbund · Eine kleine Taverne für große Abenteuer &nbsp; ✦</p>
+    </main>
+  </div>
+
+  <dialog id="campaign-dialog"><h2>Wie heißt eure Geschichte?</h2><p class="intro">Der Name erscheint auf der Startseite. Er lässt sich jederzeit ändern.</p><form id="campaign-form"><div class="field"><label for="campaign-input">Kampagnenname</label><input id="campaign-input" maxlength="80" required placeholder="z. B. Die Schatten von Eldermoor"></div><div class="dialog-actions"><button type="button" class="button ghost" data-close-dialog>Abbrechen</button><button class="button" type="submit">Speichern</button></div></form></dialog>
+  <dialog id="character-dialog"><h2 id="char-modal-heading">Neuen Helden erschaffen</h2><p class="intro">Die ersten Zeilen eurer Geschichte. Mehr Werte können später ergänzt werden.</p><form id="character-form"><input id="character-id" type="hidden"><div class="field"><label for="character-name">Name *</label><input id="character-name" maxlength="60" required placeholder="z. B. Lyra Sternenwind"></div><div class="form-grid"><div class="field"><label for="character-class">Klasse</label><input id="character-class" maxlength="50" placeholder="z. B. Waldläuferin"></div><div class="field"><label for="character-race">Volk</label><input id="character-race" maxlength="50" placeholder="z. B. Elf"></div></div><div class="field"><label for="character-level">Stufe</label><input id="character-level" type="number" min="1" max="20" value="1" required></div><div class="dialog-actions"><button type="button" class="button ghost" data-close-dialog>Abbrechen</button><button class="button" type="submit">Charakter speichern</button></div></form></dialog>
+  <dialog id="note-dialog"><h2 id="note-modal-heading">Chronikeintrag</h2><p class="intro">Eine Erinnerung, eine Idee oder ein Mysterium.</p><form id="note-form"><input id="note-id" type="hidden"><div class="field"><label for="note-title">Titel *</label><input id="note-title" maxlength="100" required placeholder="z. B. Die erste Begegnung"></div><div class="field"><label for="note-body">Notizen</label><textarea id="note-body" maxlength="10000" placeholder="Was ist passiert? Was soll nicht vergessen werden?"></textarea></div><div class="dialog-actions"><button type="button" class="button ghost" data-close-dialog>Abbrechen</button><button class="button" type="submit">Eintrag speichern</button></div></form></dialog>
+  <dialog id="cloud-auth-dialog"><span class="eyebrow">Würfelbund Online</span><h2 id="cloud-auth-title">Willkommen zurück</h2><p class="intro">Melde dich an, um deine Kampagnen online zu speichern.</p><form id="cloud-auth-form" class="cloud-auth-layout"><div class="field"><label for="cloud-email">E-Mail-Adresse</label><input type="email" id="cloud-email" required autocomplete="email" placeholder="du@beispiel.de"></div><div class="field"><label for="cloud-password">Passwort (mindestens 6 Zeichen)</label><input type="password" id="cloud-password" required minlength="6" autocomplete="current-password"></div><button class="button" id="cloud-auth-submit" type="submit">Anmelden</button><div style="display:flex;justify-content:space-between;gap:10px"><button type="button" class="inline-link" id="cloud-auth-switch">Neues Konto erstellen</button><button type="button" class="inline-link" data-close-dialog>Schließen</button></div></form></dialog>
+  <dialog id="cloud-campaign-dialog"><span class="eyebrow">Neues Abenteuer</span><h2>Kampagne erstellen</h2><p class="intro">Du wirst automatisch Spielleiter dieser Kampagne. Eine Einladungsadresse für Spieler wird anschließend erzeugt.</p><form id="cloud-campaign-form"><div class="field"><label for="online-campaign-name">Kampagnenname</label><input id="online-campaign-name" maxlength="80" required placeholder="Die Schatten von Eldermoor"></div><div class="field"><label for="online-campaign-description">Kurzbeschreibung (optional)</label><textarea id="online-campaign-description" maxlength="500" rows="3" placeholder="Wohin führt euer Abenteuer?"></textarea></div><div class="dialog-actions"><button class="button ghost" type="button" data-close-dialog>Abbrechen</button><button class="button" type="submit" id="cloud-campaign-save">Kampagne erstellen</button></div></form></dialog>
+  <dialog id="cloud-join-dialog"><span class="eyebrow">Auf ins Abenteuer</span><h2>Kampagne beitreten</h2><p class="intro">Füge den Einladungslink oder die Kampagnen-ID ein. Du trittst als Spieler bei.</p><form id="cloud-join-form"><div class="field"><label for="cloud-join-code">Einladung</label><input id="cloud-join-code" required placeholder="Einladungslink oder ID"></div><div class="dialog-actions"><button class="button ghost" type="button" data-close-dialog>Abbrechen</button><button class="button" type="submit" id="cloud-join-save">Beitreten</button></div></form></dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    "use strict";
+    // Alle Daten bleiben lokal. Eine spätere Online-Synchronisation kann diese
+    // Speicherfunktionen durch eine API ersetzen, ohne die Oberfläche neu zu bauen.
+    const STORAGE_KEY = "wuerfelbund-save-v1";
+    const defaultState = () => ({version:1,campaign:"",characters:[],notes:[],rolls:[],rollCount:0,encounter:{actors:[],turn:0,round:1}});
+    const $ = selector => document.querySelector(selector);
+    const $$ = selector => Array.from(document.querySelectorAll(selector));
+    const esc = value => String(value ?? "").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"})[ch]);
+    const icon = id => `<svg class="icon" aria-hidden="true"><use href="#i-${id}"></use></svg>`;
+    const uid = () => (globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`);
+    const bounded = (value,min,max,fallback) => {const n=Number(value);return Number.isFinite(n)?Math.max(min,Math.min(max,Math.trunc(n))):fallback};
+    const clean = (value,max=100) => typeof value==="string"?value.slice(0,max):"";
+    const safeDate = value => {const d=new Date(value);return Number.isFinite(d.getTime())?d.toISOString():new Date().toISOString()};
+    function normalize(input){
+      const s=defaultState();if(!input || typeof input!=="object")return s;
+      s.campaign=clean(input.campaign,80);
+      if(Array.isArray(input.characters))s.characters=input.characters.slice(0,200).filter(x=>x&&typeof x==="object").map(x=>({id:clean(x.id,100)||uid(),name:clean(x.name,60),className:clean(x.className,50),race:clean(x.race,50),level:bounded(x.level,1,20,1)})).filter(x=>x.name);
+      if(Array.isArray(input.notes))s.notes=input.notes.slice(0,500).filter(x=>x&&typeof x==="object").map(x=>({id:clean(x.id,100)||uid(),title:clean(x.title,100),body:clean(x.body,10000),created:safeDate(x.created)})).filter(x=>x.title);
+      if(Array.isArray(input.rolls))s.rolls=input.rolls.slice(0,30).filter(x=>x&&typeof x==="object").map(x=>({id:clean(x.id,100)||uid(),sides:bounded(x.sides,4,100,20),count:bounded(x.count,1,20,1),mod:bounded(x.mod,-100,100,0),values:Array.isArray(x.values)?x.values.slice(0,20).map(v=>bounded(v,1,100,1)):[],total:bounded(x.total,-100,2100,0),created:safeDate(x.created)}));
+      s.rollCount=bounded(input.rollCount,0,10000000,s.rolls.length);
+      const e=input.encounter;if(e&&typeof e==="object"){
+        if(Array.isArray(e.actors))s.encounter.actors=e.actors.slice(0,100).filter(x=>x&&typeof x==="object").map(x=>({id:clean(x.id,100)||uid(),name:clean(x.name,60),initiative:bounded(x.initiative,-50,100,0)})).filter(x=>x.name);
+        s.encounter.turn=bounded(e.turn,0,Math.max(0,s.encounter.actors.length-1),0);s.encounter.round=bounded(e.round,1,100000,1);
+      }
+      return s;
+    }
+    function load(){try{return normalize(JSON.parse(localStorage.getItem(STORAGE_KEY)))}catch{return defaultState()}}
+    let state=load();let selectedSides=20;let toastTimer;
+    function save(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}catch{toast("Speichern nicht möglich. Bitte Browserspeicher prüfen.")}}
+    function update(){save();renderAll()}
+    function toast(message){const el=$("#toast");el.textContent=message;el.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove("show"),3200)}
+    function emptyState(headline,body,action,label,symbol="book") {return `<div class="empty"><span class="empty-icon">${icon(symbol)}</span><h3>${esc(headline)}</h3><p>${esc(body)}</p>${action?`<button class="button small secondary" data-action="${action}">${esc(label)}</button>`:""}</div>`}
+    function shortDate(iso){return new Intl.DateTimeFormat("de-DE",{day:"2-digit",month:"short",year:"numeric"}).format(new Date(iso))}
+    function navigate(view){if(!["overview","dice","characters","combat","journal","settings"].includes(view))view="overview";$$('.page').forEach(el=>el.classList.toggle("active",el.id===`view-${view}`));$$('.nav-button').forEach(el=>{const active=el.dataset.view===view;el.classList.toggle("active",active);if(active)el.setAttribute("aria-current","page");else el.removeAttribute("aria-current")});const names={overview:"Übersicht",dice:"Würfel",characters:"Charaktere",combat:"Kampf",journal:"Chronik",settings:"Einstellungen"};$("#breadcrumb-name").textContent=names[view];if(location.hash!==`#${view}`)history.replaceState(null,"",`#${view}`);window.scrollTo({top:0,behavior:"instant"})}
+    function renderAll(){
+      $("#hero-title").textContent=state.campaign||"Noch ist das Buch leer.";$("#current-campaign-name").textContent=state.campaign||"Noch unbenannt";$("#stat-characters").textContent=state.characters.length;$("#stat-notes").textContent=state.notes.length;$("#stat-rolls").textContent=state.rollCount;
+      $("#overview-notes").innerHTML=state.notes.length?state.notes.slice(0,3).map((n,i)=>`<div class="entry"><span class="entry-dot">${i+1}</span><div><strong>${esc(n.title)}</strong><p>${esc((n.body||"Keine Beschreibung").slice(0,96))}</p><small class="muted">${shortDate(n.created)}</small></div></div>`).join(""):emptyState("Noch keine Einträge","Jede Legende beginnt mit dem ersten Kapitel.","new-note","Ersten Eintrag schreiben","scroll");
+      renderCharacters();renderNotes();renderRolls();renderCombat();
+    }
+    function renderCharacters(){const el=$("#character-list");el.innerHTML=state.characters.length?state.characters.map(c=>`<article class="character-card"><span class="level-tag">STUFE ${c.level}</span><h3>${esc(c.name)}</h3><p>${esc([c.race,c.className].filter(Boolean).join(" · ")||"Unbekannter Pfad")}</p><div class="character-actions"><button class="button small secondary" data-action="edit-character" data-id="${esc(c.id)}">Bearbeiten</button><button class="button small ghost" data-action="delete-character" data-id="${esc(c.id)}" aria-label="${esc(c.name)} löschen">${icon("trash")}</button></div></article>`).join(""):emptyState("Noch keine Helden","Schaffe Platz am Tavernentisch für deine ersten Gefährten.","new-character","Ersten Charakter erstellen","people");}
+    function renderNotes(){const el=$("#journal-list");el.innerHTML=state.notes.length?state.notes.map(n=>`<article class="small-note"><span class="note-date">${shortDate(n.created)}</span><h3>${esc(n.title)}</h3><div class="note-body">${esc(n.body||"Noch kein Text.")}</div><div class="note-actions"><button class="button small secondary" data-action="edit-note" data-id="${esc(n.id)}">Bearbeiten</button><button class="button small ghost" data-action="delete-note" data-id="${esc(n.id)}" aria-label="${esc(n.title)} löschen">${icon("trash")}</button></div></article>`).join(""):emptyState("Die Seiten sind noch leer","Halte euren ersten Abend, Ideen oder Begegnungen fest.","new-note","Ersten Eintrag schreiben","book");}
+    function renderRolls(){const el=$("#roll-history");el.innerHTML=state.rolls.length?state.rolls.map(r=>`<div class="history-row"><div><strong>${r.total}</strong><p>${r.count}W${r.sides} ${r.mod>=0?"+":"−"} ${Math.abs(r.mod)} · [${r.values.join(", ")}]</p></div><small>${new Intl.DateTimeFormat("de-DE",{hour:"2-digit",minute:"2-digit"}).format(new Date(r.created))}</small></div>`).join(""):emptyState("Noch kein Würfel gefallen","Dein erster Wurf wartet schon auf dich.",null,null,"dice");}
+    function renderCombat(){const e=state.encounter;const current=e.actors[e.turn];$("#current-actor").textContent=current?.name||"Noch niemand";$("#round-number").textContent=e.round;$("#turn-summary").textContent=current?`Initiative ${current.initiative} · ${e.turn+1} von ${e.actors.length}`:"Füge Kämpfer hinzu, um zu starten.";$("#next-turn").disabled=!e.actors.length;$("#restart-combat").disabled=!e.actors.length;$("#clear-combat").disabled=!e.actors.length;$("#actor-list").innerHTML=e.actors.length?e.actors.map((a,i)=>`<div class="actor-row ${i===e.turn?"current":""}"><span class="actor-score">${a.initiative}</span><div class="actor-info"><strong>${esc(a.name)}</strong><small>${i===e.turn?'<span class="turn-indicator">◆ Am Zug</span>':`Platz ${i+1}`}</small></div><button class="actor-delete" data-action="remove-actor" data-id="${esc(a.id)}" title="Entfernen" aria-label="${esc(a.name)} entfernen">${icon("trash")}</button></div>`).join(""):emptyState("Noch kein Kampf","Füge links oder unten einen Namen hinzu – der Initiativwert wird auf Wunsch gewürfelt.",null,null,"swords");const selected=$("#actor-from-party").value;$("#actor-from-party").innerHTML='<option value="">– Eigenen Namen eingeben –</option>'+state.characters.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join("");if(state.characters.some(c=>c.id===selected))$("#actor-from-party").value=selected;}
+    function openModal(id){const d=$(id);if(!d.open)d.showModal()}
+    function newCharacter(id){const c=state.characters.find(c=>c.id===id);$("#char-modal-heading").textContent=c?"Helden bearbeiten":"Neuen Helden erschaffen";$("#character-id").value=c?.id||"";$("#character-name").value=c?.name||"";$("#character-class").value=c?.className||"";$("#character-race").value=c?.race||"";$("#character-level").value=c?.level||1;openModal("#character-dialog")}
+    function newNote(id){const n=state.notes.find(n=>n.id===id);$("#note-modal-heading").textContent=n?"Eintrag bearbeiten":"Chronikeintrag";$("#note-id").value=n?.id||"";$("#note-title").value=n?.title||"";$("#note-body").value=n?.body||"";openModal("#note-dialog")}
+    function randomDie(sides){const range=4294967296,limit=Math.floor(range/sides)*sides;let n;if(globalThis.crypto?.getRandomValues){const buf=new Uint32Array(1);do{crypto.getRandomValues(buf);n=buf[0]}while(n>=limit);return n%sides+1}return Math.floor(Math.random()*sides)+1}
+    function roll(sides=selectedSides,count=bounded($("#dice-count").value,1,20,1),mod=bounded($("#dice-mod").value,-100,100,0)){
+      const values=Array.from({length:count},()=>randomDie(sides));const total=values.reduce((a,b)=>a+b,mod);state.rolls.unshift({id:uid(),sides,count,mod,values,total,created:new Date().toISOString()});state.rolls=state.rolls.slice(0,30);state.rollCount++;$("#roll-result").textContent=total;$("#roll-detail").textContent=`${count}W${sides} ${mod>=0?"+":"−"} ${Math.abs(mod)}: ${values.join(" + ")}${mod?` ${mod>0?"+":"−"} ${Math.abs(mod)}`:""} = ${total}`;$("#roll-orb").classList.remove("rolling");void $("#roll-orb").offsetWidth;$("#roll-orb").classList.add("rolling");update();return total;
+    }
+    document.addEventListener("click",event=>{
+      const view=event.target.closest("[data-view]");if(view){navigate(view.dataset.view);return}
+      const choice=event.target.closest("[data-sides]");if(choice){selectedSides=Number(choice.dataset.sides);$$('[data-sides]').forEach(el=>{el.classList.toggle("selected",el===choice);el.setAttribute("aria-pressed",String(el===choice))});return}
+      if(event.target.closest("[data-close-dialog]")){event.target.closest("dialog")?.close();return}
+      const button=event.target.closest("[data-action]");if(!button)return;const action=button.dataset.action,id=button.dataset.id;
+      if(action==="roll-d20"){selectedSides=20;$$('[data-sides]').forEach(el=>el.classList.toggle("selected",Number(el.dataset.sides)===20));navigate("dice");roll(20,1,0)}
+      if(action==="rename-campaign"){$("#campaign-input").value=state.campaign;openModal("#campaign-dialog")}
+      if(action==="new-character")newCharacter();if(action==="edit-character")newCharacter(id);
+      if(action==="delete-character"&&confirm("Diesen Charakter wirklich löschen?")){state.characters=state.characters.filter(c=>c.id!==id);update();toast("Charakter entfernt.")}
+      if(action==="new-note")newNote();if(action==="edit-note")newNote(id);
+      if(action==="delete-note"&&confirm("Diesen Chronikeintrag wirklich löschen?")){state.notes=state.notes.filter(n=>n.id!==id);update();toast("Eintrag entfernt.")}
+      if(action==="remove-actor"){const old=state.encounter;const index=old.actors.findIndex(a=>a.id===id);if(index>=0){old.actors.splice(index,1);if(index<old.turn)old.turn--;old.turn=Math.max(0,Math.min(old.turn,old.actors.length-1));update()}}
+    });
+    $("#roll-button").addEventListener("click",()=>roll());
+    $("#campaign-form").addEventListener("submit",e=>{e.preventDefault();state.campaign=$("#campaign-input").value.trim().slice(0,80);$("#campaign-dialog").close();update();toast("Kampagnenname gespeichert.")});
+    $("#character-form").addEventListener("submit",e=>{e.preventDefault();const id=$("#character-id").value;const next={id:id||uid(),name:$("#character-name").value.trim().slice(0,60),className:$("#character-class").value.trim().slice(0,50),race:$("#character-race").value.trim().slice(0,50),level:bounded($("#character-level").value,1,20,1)};if(!next.name)return;const i=state.characters.findIndex(c=>c.id===id);if(i>=0)state.characters[i]=next;else state.characters.push(next);$("#character-dialog").close();update();toast("Charakter gespeichert.")});
+    $("#note-form").addEventListener("submit",e=>{e.preventDefault();const id=$("#note-id").value;const previous=state.notes.find(n=>n.id===id);const next={id:id||uid(),title:$("#note-title").value.trim().slice(0,100),body:$("#note-body").value.slice(0,10000),created:previous?.created||new Date().toISOString()};if(!next.title)return;state.notes=state.notes.filter(n=>n.id!==id);state.notes.unshift(next);$("#note-dialog").close();update();toast("Chronik aktualisiert.")});
+    $("#actor-from-party").addEventListener("change",e=>{const c=state.characters.find(c=>c.id===e.target.value);if(c)$("#actor-name").value=c.name});
+    $("#actor-form").addEventListener("submit",e=>{e.preventDefault();const name=$("#actor-name").value.trim().slice(0,60);if(!name){toast("Bitte einen Namen eingeben.");return}const raw=$("#actor-initiative").value.trim();const initiative=raw===""?randomDie(20):bounded(raw,-50,100,0);state.encounter.actors.push({id:uid(),name,initiative});state.encounter.actors.sort((a,b)=>b.initiative-a.initiative);state.encounter.turn=0;state.encounter.round=1;$("#actor-name").value="";$("#actor-initiative").value="";$("#actor-from-party").value="";update();toast(`${name} ist dabei (Initiative ${initiative}).`)});
+    $("#next-turn").addEventListener("click",()=>{const e=state.encounter;if(!e.actors.length)return;e.turn++;if(e.turn>=e.actors.length){e.turn=0;e.round++}update()});
+    $("#restart-combat").addEventListener("click",()=>{state.encounter.turn=0;state.encounter.round=1;update();toast("Kampf von vorne gestartet.")});
+    $("#clear-combat").addEventListener("click",()=>{if(confirm("Alle Kämpfer aus der Initiative entfernen?")){state.encounter={actors:[],turn:0,round:1};update()}});
+    $("#export-data").addEventListener("click",()=>{const data=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});const url=URL.createObjectURL(data);const a=document.createElement("a");a.href=url;a.download=`wuerfelbund-spielstand-${new Date().toISOString().slice(0,10)}.json`;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);toast("Spielstand heruntergeladen.")});
+    $("#import-data").addEventListener("click",()=>$("#import-file").click());
+    $("#import-file").addEventListener("change",async e=>{const f=e.target.files?.[0];e.target.value="";if(!f)return;if(f.size>1024*1024){toast("Datei zu groß (max. 1 MB).");return}try{const data=JSON.parse(await f.text());if(!data||typeof data!=="object"||data.version!==1||!Array.isArray(data.characters)||!Array.isArray(data.notes)){throw new Error("Ungültiges Dateiformat")}if(!confirm("Deinen aktuellen Spielstand durch den importierten ersetzen?"))return;state=normalize(data);update();toast("Spielstand importiert.")}catch{toast("Diese Datei ist kein gültiger Würfelbund-Spielstand.")}});
+    $("#reset-data").addEventListener("click",()=>{if(confirm("Wirklich ALLE lokalen Daten löschen? Das kann nicht rückgängig gemacht werden.")){state=defaultState();update();navigate("overview");toast("Lokaler Spielstand gelöscht.")}});
+    $$('dialog').forEach(d=>d.addEventListener("click",e=>{if(e.target===d)d.close()}));
+    window.addEventListener("hashchange",()=>navigate(location.hash.slice(1)));
+    $("#today").textContent=new Intl.DateTimeFormat("de-DE",{weekday:"short",day:"2-digit",month:"long",year:"numeric"}).format(new Date());
+    renderAll();navigate(location.hash.slice(1)||"overview");$$('[data-sides]').forEach(el=>el.setAttribute("aria-pressed",String(Number(el.dataset.sides)===selectedSides)));
+  </script>
+  <script type="module">
+    // Online-Teil von Würfelbund: GitHub Pages + Firebase Spark.
+    // Hier stehen ausschließlich öffentliche Web-App-Konfigurationswerte,
+    // niemals Service-Account-Schlüssel oder Admin-Zugangsdaten.
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword,
+      signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-auth.js";
+    import { getFirestore, collection, doc, getDoc, getDocs, writeBatch,
+      serverTimestamp } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB3Tlq5zaXXpE0rwG4C4si-BkAHIeplISk",
+      authDomain: "wuerfelbund.firebaseapp.com",
+      projectId: "wuerfelbund",
+      storageBucket: "wuerfelbund.firebasestorage.app",
+      messagingSenderId: "308713612521",
+      appId: "1:308713612521:web:ea9ab19e17263184dc7c78"
+    };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const el = selector => document.querySelector(selector);
+    const sanitize = value => String(value ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+    const message = value => {
+      const n = el("#toast");
+      n.textContent = value;
+      n.classList.add("show");
+      setTimeout(() => n.classList.remove("show"), 4000);
+    };
+    let currentUser = null;
+    let authMode = "login";
+    let currentCampaign = "";
+
+    function friendlyError(error) {
+      const code = error?.code || "";
+      if (code.includes("email-already-in-use")) return "Für diese E-Mail gibt es bereits ein Konto.";
+      if (code.includes("invalid-email")) return "Bitte eine gültige E-Mail-Adresse eingeben.";
+      if (code.includes("invalid-credential") || code.includes("wrong-password")) return "E-Mail-Adresse oder Passwort ist nicht korrekt.";
+      if (code.includes("weak-password")) return "Bitte ein stärkeres Passwort wählen.";
+      if (code.includes("network-request-failed") || code.includes("unavailable")) return "Netzwerkfehler. Bitte die Verbindung prüfen.";
+      if (code.includes("too-many-requests")) return "Zu viele Versuche. Bitte später erneut probieren.";
+      if (code.includes("permission-denied")) return "Zugriff verweigert. Die Firestore-Regeln müssen zuerst eingerichtet sein.";
+      return "Aktion fehlgeschlagen. Bitte erneut versuchen.";
+    }
+    function renderAuth() {
+      if (currentUser) {
+        el("#cloud-headline").textContent = "Willkommen bei Würfelbund Online";
+        el("#cloud-subline").textContent = currentUser.email || "Angemeldet";
+        el("#cloud-auth-button").textContent = "Abmelden";
+      } else {
+        el("#cloud-headline").textContent = "Kampagnen gemeinsam organisieren";
+        el("#cloud-subline").textContent = "Melde dich an, erstelle eine Kampagne oder tritt deinen Freunden bei.";
+        el("#cloud-auth-button").textContent = "Anmelden";
+        el("#cloud-campaign-list").className = "online-status";
+        el("#cloud-campaign-list").textContent = "Bitte melde dich an, um deine Kampagnen zu sehen.";
+      }
+      el("#new-online-campaign").disabled = !currentUser;
+      el("#join-online-campaign").disabled = !currentUser;
+      const invite = new URLSearchParams(location.search).get("campaign");
+      el("#cloud-invite").classList.toggle("visible", Boolean(invite));
+      if (invite) {
+        el("#cloud-invite").textContent = currentUser
+          ? "Einladungslink erkannt! Klicke auf „Beitreten“, um der Kampagne beizutreten."
+          : "Einladungslink erkannt! Melde dich zuerst an, anschließend kannst du beitreten.";
+        if (currentUser) el("#cloud-join-code").value = invite;
+      }
+    }
+    function inviteUrl(campaignId) {
+      return new URL(location.pathname + "?campaign=" + encodeURIComponent(campaignId), location.origin).href;
+    }
+    async function refreshCampaigns() {
+      if (!currentUser) return;
+      const uid = currentUser.uid;
+      const container = el("#cloud-campaign-list");
+      container.className = "online-status";
+      container.textContent = "Kampagnen werden geladen …";
+      try {
+        const records = await getDocs(collection(db, "users", uid, "campaigns"));
+        const campaigns = await Promise.all(records.docs.slice(0,60).map(async record => {
+          try {
+            const snapshot = await getDoc(doc(db, "campaigns", record.id));
+            if (!snapshot.exists()) return null;
+            return {id:snapshot.id, ...snapshot.data(), owner:snapshot.data().ownerId === uid};
+          } catch { return null; }
+        }));
+        if (currentUser?.uid !== uid) return;
+        const found = campaigns.filter(Boolean);
+        if (!found.length) {
+          container.className = "online-status";
+          container.innerHTML = "<strong>Noch keine Online-Kampagnen.</strong><br>Erstelle ein Abenteuer oder trete über einen Einladungslink bei.";
+          return;
+        }
+        container.className = "campaign-list";
+        container.innerHTML = found.map(c => `
+          <article class="campaign-tile ${currentCampaign===c.id?"active":""}">
+            <span class="eyebrow">${c.owner?"✦ Spielleiter":"◇ Spieler"}</span>
+            <strong>${sanitize(c.name)}</strong>
+            <p>${sanitize(c.description || "Keine Beschreibung")}</p>
+            <div class="button-row">
+              <button class="button small secondary" type="button" data-cloud="select" data-cid="${sanitize(c.id)}">Auswählen</button>
+              <button class="button small ghost" type="button" data-cloud="invite" data-cid="${sanitize(c.id)}">Einladen</button>
+            </div>
+          </article>`).join("");
+      } catch (error) {
+        container.className = "online-status";
+        container.textContent = friendlyError(error);
+      }
+    }
+    onAuthStateChanged(auth, user => {
+      currentUser = user;
+      renderAuth();
+      if (user) {
+        el("#campaign-lobby").classList.add("open");
+        refreshCampaigns();
+      }
+    });
+    el("#cloud-toggle").addEventListener("click", () => el("#campaign-lobby").classList.toggle("open"));
+    el("#cloud-auth-button").addEventListener("click", async () => {
+      if (currentUser) {
+        if (!confirm("Möchtest du dich von Würfelbund Online abmelden?")) return;
+        try { await signOut(auth); message("Du bist abgemeldet."); }
+        catch (error) { message(friendlyError(error)); }
+      } else { authMode = "login"; showAuthMode(); el("#cloud-auth-dialog").showModal(); }
+    });
+    function showAuthMode() {
+      const registering = authMode === "register";
+      el("#cloud-auth-title").textContent = registering?"Konto erstellen":"Willkommen zurück";
+      el("#cloud-auth-submit").textContent = registering?"Registrieren":"Anmelden";
+      el("#cloud-auth-switch").textContent = registering?"Ich habe bereits ein Konto":"Neues Konto erstellen";
+      el("#cloud-password").autocomplete = registering?"new-password":"current-password";
+    }
+    el("#cloud-auth-switch").addEventListener("click", () => {
+      authMode = authMode==="login"?"register":"login";
+      showAuthMode();
+    });
+    el("#cloud-auth-form").addEventListener("submit", async event => {
+      event.preventDefault();
+      const button = el("#cloud-auth-submit");
+      button.disabled = true;
+      try {
+        const email = el("#cloud-email").value.trim();
+        const password = el("#cloud-password").value;
+        if (authMode === "register") await createUserWithEmailAndPassword(auth, email, password);
+        else await signInWithEmailAndPassword(auth, email, password);
+        el("#cloud-password").value = "";
+        el("#cloud-auth-dialog").close();
+        message("Erfolgreich angemeldet.");
+      } catch (error) { message(friendlyError(error)); }
+      finally { button.disabled = false; }
+    });
+    el("#new-online-campaign").addEventListener("click", () => {
+      if (currentUser) el("#cloud-campaign-dialog").showModal();
+    });
+    el("#cloud-campaign-form").addEventListener("submit", async event => {
+      event.preventDefault();
+      if (!currentUser) return;
+      const button = el("#cloud-campaign-save");
+      button.disabled = true;
+      try {
+        const campaignRef = doc(collection(db, "campaigns"));
+        const batch = writeBatch(db);
+        const uid = currentUser.uid;
+        batch.set(campaignRef, {
+          ownerId: uid,
+          name: el("#online-campaign-name").value.trim().slice(0,80),
+          description: el("#online-campaign-description").value.trim().slice(0,500),
+          createdAt: serverTimestamp()
+        });
+        batch.set(doc(db, "users", uid, "campaigns", campaignRef.id), {
+          campaignId: campaignRef.id,
+          role: "owner",
+          addedAt: serverTimestamp()
+        });
+        await batch.commit();
+        currentCampaign = campaignRef.id;
+        el("#cloud-campaign-form").reset();
+        el("#cloud-campaign-dialog").close();
+        message("Deine Online-Kampagne wurde erstellt.");
+        refreshCampaigns();
+      } catch (error) { message(friendlyError(error)); }
+      finally { button.disabled = false; }
+    });
+    el("#join-online-campaign").addEventListener("click", () => {
+      if (!currentUser) return;
+      const invite = new URLSearchParams(location.search).get("campaign");
+      el("#cloud-join-code").value = invite || "";
+      el("#cloud-join-dialog").showModal();
+    });
+    function parseInvite(input) {
+      const raw = input.trim();
+      let value = raw;
+      try {
+        if (/^https?:\/\//i.test(raw)) value = new URL(raw).searchParams.get("campaign") || "";
+      } catch { value = ""; }
+      return /^[a-zA-Z0-9]{20}$/.test(value) ? value : "";
+    }
+    el("#cloud-join-form").addEventListener("submit", async event => {
+      event.preventDefault();
+      if (!currentUser) return;
+      const campaignId = parseInvite(el("#cloud-join-code").value);
+      if (!campaignId) { message("Bitte einen gültigen Einladungslink eingeben."); return; }
+      const button = el("#cloud-join-save");
+      button.disabled = true;
+      try {
+        const uid = currentUser.uid;
+        const memberRef = doc(db, "campaigns", campaignId, "members", uid);
+        const existing = await getDoc(memberRef);
+        if (!existing.exists()) {
+          const batch = writeBatch(db);
+          batch.set(memberRef, {role:"player",joinedAt:serverTimestamp()});
+          batch.set(doc(db, "users", uid, "campaigns", campaignId), {
+            campaignId, role:"player",addedAt:serverTimestamp()
+          });
+          await batch.commit();
+        }
+        // Erst nach gültiger Mitgliedschaft darf die Kampagne gelesen werden.
+        const campaign = await getDoc(doc(db,"campaigns",campaignId));
+        if (!campaign.exists()) throw new Error("missing");
+        currentCampaign = campaignId;
+        el("#cloud-join-dialog").close();
+        message("Du bist der Kampagne beigetreten.");
+        refreshCampaigns();
+      } catch (error) { message(error?.code?friendlyError(error):"Einladung ungültig oder Kampagne nicht verfügbar."); }
+      finally { button.disabled = false; }
+    });
+    document.addEventListener("click", async event => {
+      const button = event.target.closest("[data-cloud]");
+      if (!button) return;
+      const campaignId = button.dataset.cid;
+      if (button.dataset.cloud === "invite") {
+        const url = inviteUrl(campaignId);
+        try { await navigator.clipboard.writeText(url); message("Einladungslink kopiert."); }
+        catch { window.prompt("Einladungslink kopieren:",url); }
+      } else if (button.dataset.cloud === "select") {
+        currentCampaign = campaignId;
+        refreshCampaigns();
+        message("Kampagne ausgewählt. Die Synchronisierung der Spielmodule folgt in der nächsten Version.");
+      }
+    });
+  </script>
+</body>
+</html>
