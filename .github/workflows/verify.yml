@@ -1,0 +1,76 @@
+name: Würfelbund · interne Prüfungen
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  logic:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repository lesen
+        uses: actions/checkout@v4
+      - name: Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Java 21 für Firestore-Emulator
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Abhängigkeiten aus Lockfile
+        run: npm ci
+      - name: Logik, Profile und Quellen
+        run: npm run test:logic
+      - name: Berechtigungen im isolierten Emulator
+        run: npm run test:firestore
+      - name: Web-Artefakt mit Freigabeliste vorbereiten
+        run: npm run build:public
+      - name: Web-Artefakt auf unerwünschte Inhalte prüfen
+        run: npm run test:public
+
+  browser:
+    needs: logic
+    name: Browser · ${{ matrix.browser }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox]
+    steps:
+      - name: Repository lesen
+        uses: actions/checkout@v4
+      - name: Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Java 21 für Firestore-Emulator
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Abhängigkeiten aus Lockfile
+        run: npm ci
+      - name: Öffentlichen Prüfbuild erzeugen
+        run: npm run build:public
+      - name: Eigenen Browser mit Systembibliotheken installieren
+        run: npx playwright install --with-deps ${{ matrix.browser }}
+      - name: Getrennten Auth-/Firestore-Emulator und Browser starten
+        run: npm run test:browser:isolated:${{ matrix.browser }}
+      - name: Browser-Screenshots und Fehlerspuren bewahren
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b15-browser-${{ matrix.browser }}
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 14
+          if-no-files-found: ignore

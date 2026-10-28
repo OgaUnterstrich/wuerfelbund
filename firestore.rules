@@ -1,0 +1,269 @@
+rules_version = '2';
+
+// Würfelbund B14 – versionierte Prüfgrundlage; NICHT automatisch live veröffentlichen.
+// Kampagnen-IDs sind Einladungsgeheimnisse. Rollen entstehen ausschließlich
+// aus ownerId der Kampagne bzw. eigener Mitgliedschaft, nie aus dem Nutzerindex.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function campaignPath(campaignId) {
+      return /databases/$(database)/documents/campaigns/$(campaignId);
+    }
+
+    function memberPath(campaignId, userId) {
+      return /databases/$(database)/documents/campaigns/$(campaignId)/members/$(userId);
+    }
+
+    function blockedPath(campaignId, userId) {
+      return /databases/$(database)/documents/campaigns/$(campaignId)/blockedUsers/$(userId);
+    }
+
+    function isOwner(campaignId) {
+      return signedIn() && exists(campaignPath(campaignId))
+        && get(campaignPath(campaignId)).data.ownerId == request.auth.uid;
+    }
+
+    function isMember(campaignId) {
+      return signedIn() && !exists(blockedPath(campaignId, request.auth.uid))
+        && exists(memberPath(campaignId, request.auth.uid))
+        && get(memberPath(campaignId, request.auth.uid)).data.role == 'player';
+    }
+
+    function isParticipant(campaignId) {
+      return isOwner(campaignId) || isMember(campaignId);
+    }
+
+    // getAfter/existsAfter erlauben die zwei bereits genutzten Firestore-Batches:
+    // Kampagne + Besitzerindex und Mitgliedschaft + Spielerindex.
+    function ownerAfter(campaignId, userId) {
+      return existsAfter(campaignPath(campaignId))
+        && getAfter(campaignPath(campaignId)).data.ownerId == userId;
+    }
+
+    function memberAfter(campaignId, userId) {
+      return existsAfter(memberPath(campaignId, userId))
+        && !existsAfter(blockedPath(campaignId, userId))
+        && getAfter(memberPath(campaignId, userId)).data.role == 'player';
+    }
+
+    function validCampaign(data) {
+      return data.keys().hasOnly(['ownerId', 'name', 'description', 'createdAt', 'rules'])
+        && data.keys().hasAll(['ownerId', 'name', 'description', 'createdAt'])
+        && data.ownerId is string
+        && data.name is string && data.name.size() > 0 && data.name.size() <= 80
+        && data.description is string && data.description.size() <= 500
+        && data.createdAt is timestamp
+        && validCampaignRules(data.get('rules', { 'base': 'srd-5.2.1', 'worlds': [], 'packs': [] }));
+    }
+
+    function validCampaignRules(config) {
+      return config is map
+        && config.keys().hasOnly(['base', 'worlds', 'packs'])
+        && config.keys().hasAll(['base', 'worlds', 'packs'])
+        && config.base == 'srd-5.2.1'
+        && config.worlds is list && config.worlds.size() <= 1
+        && config.worlds.hasOnly(['edras-v1'])
+        && config.packs is list && config.packs.size() <= 6;
+    }
+
+    function validMember(data) {
+      return data.keys().hasOnly(['role', 'joinedAt'])
+        && data.keys().hasAll(['role', 'joinedAt'])
+        && data.role == 'player' && data.joinedAt is timestamp;
+    }
+
+    match /campaigns/{campaignId} {
+      allow get: if isParticipant(campaignId);
+      allow list: if false; // Die bestehende Website liest nur bekannte IDs.
+      allow create: if signedIn() && validCampaign(request.resource.data)
+        && request.resource.data.ownerId == request.auth.uid
+        && request.resource.data.createdAt == request.time;
+      allow update: if isOwner(campaignId) && validCampaign(request.resource.data)
+        && request.resource.data.ownerId == resource.data.ownerId
+        && request.resource.data.createdAt == resource.data.createdAt
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name', 'description', 'rules']);
+      allow delete: if false; // Kein ungeprüftes rekursives Löschen von Kampagnendaten.
+
+      match /members/{userId} {
+        allow get: if signedIn() && (request.auth.uid == userId || isOwner(campaignId));
+        allow list: if isOwner(campaignId);
+        allow create: if signedIn() && request.auth.uid == userId
+          && !exists(blockedPath(campaignId, userId))
+          && exists(campaignPath(campaignId)) && validMember(request.resource.data)
+          && request.resource.data.joinedAt == request.time;
+        allow update: if false; // Rolle/Beitrittszeit bleiben unveränderlich.
+        allow delete: if signedIn() && (request.auth.uid == userId || isOwner(campaignId));
+      }
+
+      // Eine entfernte Person könnte sonst mit demselben Einladungslink
+      // sofort wieder beitreten. Sperrung gilt bereits vor Mitgliedslöschung.
+      match /blockedUsers/{userId} {
+        allow get, list: if isOwner(campaignId);
+        allow create: if isOwner(campaignId)
+          && request.resource.data.keys().hasOnly(['createdAt'])
+          && request.resource.data.keys().hasAll(['createdAt'])
+          && request.resource.data.createdAt == request.time;
+        allow update: if false;
+        allow delete: if isOwner(campaignId);
+      }
+
+      // B03 verwendet dieses B02-Schema: ein Charakter, eine Eigentümer-ID,
+      // das vorhandene Regelprofil. Nur der Besitzer und die SL dürfen lesen.
+      match /characters/{characterId} {
+        // Bestehende Figurenzustände bleiben lesbar. Neue Quellen müssen aktiv sein;
+        // bei deaktivierter Quelle darf ein altes Profil diese nur unverändert behalten.
+        function validCharacterSources(nextCharacter, oldCharacter) {
+          let profile = nextCharacter.get('profile', {});
+          let before = oldCharacter.get('profile', {});
+          let refs = profile.get('sourceRefs', {});
+          let oldRefs = before.get('sourceRefs', {});
+          let config = get(campaignPath(campaignId)).data.get('rules', {
+            'base': 'srd-5.2.1', 'worlds': [], 'packs': [] });
+          return profile is map && refs is map
+            && (!profile.keys().hasAny(['ruleset']) || profile.ruleset == 'srd-5.2.1')
+            && refs.get('base', 'srd-5.2.1') == 'srd-5.2.1'
+            && refs.get('worlds', {}) is map
+            && refs.get('worlds', {}).keys().hasOnly(['edras'])
+            && refs.get('worlds', {}).get('edras', 1) == 1
+            && refs.get('packs', {}) is map
+            && refs.get('packs', {}).size() <= 6
+            && (profile.get('edras', null) == null
+              || config.worlds.hasAny(['edras-v1'])
+              || profile.get('edras', null) == before.get('edras', null))
+            && (refs.get('worlds', {}).keys().size() == 0
+              || config.worlds.hasAny(['edras-v1'])
+              || refs.get('worlds', {}) == oldRefs.get('worlds', {}))
+            && (refs.get('packs', {}).keys().hasOnly(config.packs)
+              || refs.get('packs', {}) == oldRefs.get('packs', {}));
+        }
+
+        function validCharacter(data) {
+          return data.keys().hasOnly(['schemaVersion', 'ownerId', 'character', 'createdAt', 'updatedAt', 'recentActionIds'])
+            && data.keys().hasAll(['schemaVersion', 'ownerId', 'character', 'createdAt', 'updatedAt'])
+            && data.schemaVersion == 1 && data.ownerId is string
+            && data.character is map
+            && data.character.keys().hasOnly(['id', 'name', 'className', 'race', 'level', 'profile'])
+            && data.character.keys().hasAll(['id', 'name', 'level'])
+            && data.character.id == characterId
+            && data.character.name is string && data.character.name.size() > 0
+            && data.character.name.size() <= 60
+            && data.character.get('className', '') is string
+            && data.character.get('className', '').size() <= 50
+            && data.character.get('race', '') is string
+            && data.character.get('race', '').size() <= 50
+            && data.character.level is int && data.character.level >= 1 && data.character.level <= 20
+            && data.character.get('profile', {}) is map
+            && data.get('recentActionIds', []) is list
+            && data.get('recentActionIds', []).size() <= 24
+            && data.createdAt is timestamp && data.updatedAt is timestamp;
+        }
+
+        function mayEdit() {
+          return isOwner(campaignId)
+            || (isMember(campaignId) && resource.data.ownerId == request.auth.uid);
+        }
+
+        allow get, list: if isOwner(campaignId)
+          || (isMember(campaignId) && resource.data.ownerId == request.auth.uid);
+        allow create: if isParticipant(campaignId) && validCharacter(request.resource.data)
+          && validCharacterSources(request.resource.data.character, {})
+          && request.resource.data.ownerId == request.auth.uid
+          && request.resource.data.createdAt == request.time
+          && request.resource.data.updatedAt == request.time;
+        allow update: if mayEdit() && validCharacter(request.resource.data)
+          && validCharacterSources(request.resource.data.character, resource.data.character)
+          && request.resource.data.ownerId == resource.data.ownerId
+          && request.resource.data.createdAt == resource.data.createdAt
+          && request.resource.data.updatedAt == request.time;
+        allow delete: if mayEdit();
+      }
+
+      // Publizierte Hausregeln werden nur durch die SL bereitgestellt.
+      // Dies sind explizite Kopien, NICHT die privaten persönlichen Pakete.
+      match /rulePacks/{packId} {
+        function validPublishedPack(data) {
+          return data.keys().hasOnly(['schemaVersion', 'id', 'name', 'version',
+            'abilities', 'source', 'license', 'publisherId', 'updatedAt'])
+            && data.keys().hasAll(['schemaVersion', 'id', 'name', 'version',
+              'abilities', 'source', 'license', 'publisherId', 'updatedAt'])
+            && data.schemaVersion == 1 && data.id == packId
+            && packId.matches('^pack\\.[a-z0-9][a-z0-9.-]{3,79}$')
+            && data.name is string && data.name.size() > 0 && data.name.size() <= 90
+            && data.version is int && data.version >= 1 && data.version <= 9999
+            && data.source == 'homebrew' && data.license == 'author-confirmed'
+            && data.publisherId is string && data.publisherId.size() > 0
+            && data.abilities is list && data.abilities.size() <= 50
+            && data.updatedAt == request.time;
+        }
+        allow get: if isParticipant(campaignId);
+        allow list: if isOwner(campaignId); // Nur SL verwaltet auch deaktivierte Pakete.
+        allow create: if isOwner(campaignId) && validPublishedPack(request.resource.data)
+          && request.resource.data.publisherId == request.auth.uid;
+        allow update: if isOwner(campaignId) && validPublishedPack(request.resource.data)
+          && request.resource.data.publisherId == resource.data.publisherId
+          && request.resource.data.version > resource.data.version;
+        allow delete: if false; // Deaktivieren statt alte Figurenquellen vernichten.
+      }
+
+      // SL-Geheimnisse dürfen nie Teil allgemein lesbarer Kampagnendokumente sein.
+      match /dmPrivate/{entryId} {
+        // Kein freies Dokumenten-Sammelbecken: private Test-/SL-Notizen und
+        // Fragebogen-Saaten haben bewusst enge Namen und Größen.
+        function validPrivate(data) {
+          return data.keys().hasOnly(['kind', 'note', 'hiddenSeed'])
+            && data.keys().hasAny(['note', 'hiddenSeed'])
+            && data.get('kind', '') is string && data.get('kind', '').size() <= 60
+            && data.get('note', '') is string && data.get('note', '').size() <= 10000
+            && (data.get('hiddenSeed', '') is string || data.get('hiddenSeed', '') is int)
+            && (data.get('hiddenSeed', '') is int
+              || data.get('hiddenSeed', '').size() <= 128);
+        }
+        allow get, list: if isOwner(campaignId);
+        allow create, update: if isOwner(campaignId) && validPrivate(request.resource.data);
+        allow delete: if isOwner(campaignId);
+      }
+    }
+
+    // Persönlicher Index ist ein Navigationshilfsmittel, KEIN Rollenbeweis.
+    match /users/{userId}/campaigns/{campaignId} {
+      function validIndex(data) {
+        return data.keys().hasOnly(['campaignId', 'role', 'addedAt'])
+          && data.keys().hasAll(['campaignId', 'role', 'addedAt'])
+          && data.campaignId == campaignId && data.addedAt == request.time
+          && ((data.role == 'owner' && ownerAfter(campaignId, userId))
+            || (data.role == 'player' && memberAfter(campaignId, userId)));
+      }
+      allow get, list: if signedIn() && request.auth.uid == userId;
+      allow create, update: if signedIn() && request.auth.uid == userId
+        && validIndex(request.resource.data);
+      allow delete: if signedIn() && request.auth.uid == userId;
+    }
+
+    // Persönliche Homebrew-Pakete werden nur für ihr Konto gespeichert/geladen.
+    match /users/{userId}/rulePacks/{packId} {
+      function validPack(data) {
+        return data.keys().hasOnly(['schemaVersion', 'id', 'name', 'version',
+            'abilities', 'source', 'ownerId', 'updatedAt'])
+          && data.keys().hasAll(['schemaVersion', 'id', 'name', 'version',
+            'abilities', 'source', 'ownerId', 'updatedAt'])
+          && data.schemaVersion == 1 && data.id == packId
+          && data.id is string && data.id.matches('^pack\\.[a-z0-9][a-z0-9.-]{3,79}$')
+          && data.ownerId == userId
+          && data.name is string && data.name.size() > 0 && data.name.size() <= 90
+          && data.version is int && data.version >= 1 && data.version <= 9999
+          && data.source == 'homebrew'
+          && data.abilities is list && data.abilities.size() <= 100
+          && data.updatedAt == request.time;
+      }
+      allow get, list: if signedIn() && request.auth.uid == userId;
+      allow create, update: if signedIn() && request.auth.uid == userId
+        && validPack(request.resource.data);
+      allow delete: if signedIn() && request.auth.uid == userId;
+    }
+
+    // Alle anderen Pfade bleiben geschlossen – auch andere /users-Unterordner.
+  }
+}

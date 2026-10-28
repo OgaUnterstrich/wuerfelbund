@@ -1,0 +1,11 @@
+node_modules/
+firestore-debug.log
+ui-debug.log
+.firebase/
+dist/
+test-results/
+playwright-report/
+.test-tmp/
+.dist-staging/
+.test-browsers/
+.test-tools/

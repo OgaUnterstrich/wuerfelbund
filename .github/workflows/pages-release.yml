@@ -1,0 +1,67 @@
+name: Würfelbund · öffentliche Seitenfreigabe (gesperrt bis B16)
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_confirmation:
+        description: 'Zur öffentlichen Veröffentlichung exakt PUBLIC-V1-CONFIRMED eingeben'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  prepare:
+    # Ausschließlich bewusst ausgelöste Freigabe vom main-Branch; kein Push/PR-Deploy.
+    if: github.ref == 'refs/heads/main' && inputs.release_confirmation == 'PUBLIC-V1-CONFIRMED'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - run: npm ci
+      - run: npm run test:logic
+      - run: npm run test:firestore
+      - run: npm run build:public
+      - run: npm run test:public
+      - name: Browserfreigabe zwingend erneut prüfen
+        run: npx playwright install --with-deps chromium firefox
+      - run: npm run test:browser:isolated
+      - name: Browserberichte auch bei gesperrter Freigabe behalten
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b15-release-browserberichte
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 14
+          if-no-files-found: ignore
+      - name: Betreiber-/Rechte-/Staging-Gate
+        run: npm run check:release
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist
+
+  deploy:
+    needs: prepare
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.release.outputs.page_url }}
+    steps:
+      - name: Freigegebenes Pages-Artefakt ausliefern
+        id: release
+        uses: actions/deploy-pages@v4

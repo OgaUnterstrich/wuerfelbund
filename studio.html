@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Würfelbund Regelstudio: offizielle 5.5e-Regeldaten, Charakterentwürfe und eigene Erweiterungspakete.">
+  <title>Regelstudio · Würfelbund</title>
+  <link rel="stylesheet" href="studio.css">
+  <script type="module" src="js/studio/main.mjs"></script>
+</head>
+<body>
+  <a class="skip-link" href="#studio-main">Zum Hauptinhalt springen</a>
+  <header class="site-head">
+    <a class="brand" href="index.html#overview"><span class="brand-mark">✧</span><span>WÜRFELBUND<small>REGELSTUDIO · ALPHA</small></span></a>
+    <div class="head-right"><span class="status" id="cloud-state">Lokale Entwürfe</span><a class="button-outline" href="index.html#overview">← Zur Übersicht</a></div>
+  </header>
+  <main class="layout" id="studio-main" tabindex="-1">
+    <p id="studio-storage-alert" class="studio-storage-alert" role="alert" hidden></p>
+    <section class="intro">
+      <p class="eyebrow">Eine Plattform. Viele Welten.</p>
+      <h1>Regeln, die mit euren Welten wachsen.</h1>
+      <p>Erkunde offene 5.5e-Regeln, entwirf eigene Fähigkeiten und verwalte Erweiterungspakete. Freie Geschichten bleiben Sache eurer Spielrunde.</p>
+      <div class="pill-row"><span>SRD 5.2.1 · CC BY 4.0</span><span>Eigene Regelpakete</span><span>Stufen 1–20</span><span>Kein Story-Automat</span></div>
+    </section>
+    <nav class="tabs" aria-label="Bereiche des Regelstudios">
+      <button type="button" class="tab active" data-tab="catalog" aria-current="page">Regelbibliothek</button>
+      <button type="button" class="tab" data-tab="characters">Charakterlabor</button>
+      <button type="button" class="tab" data-tab="abilities">Fähigkeiten bauen</button>
+      <button type="button" class="tab" data-tab="packs">Regelpakete</button>
+    </nav>
+
+    <section class="workspace active" data-panel="catalog">
+      <div class="section-head"><div><p class="eyebrow">Offene Spielregeln</p><h2>Die SRD-Bibliothek</h2><p>Direkt aus einem geprüften, versionierten Open-Source-Datensatz. Englische Begriffe sind zunächst unverändert.</p></div><span class="count" id="catalog-count">Lädt …</span></div>
+      <div class="catalog-layout">
+        <div class="pane">
+          <div class="filters"><label>Kategorie<select id="catalog-category"></select></label><label>Suche<input id="catalog-search" type="search" placeholder="Name filtern …" maxlength="80"></label></div>
+          <div class="item-list" id="catalog-list" aria-live="polite">Regeldaten werden geladen …</div>
+        </div>
+        <aside class="pane detail" id="catalog-detail"><p class="placeholder">Wähle einen Eintrag links, um seine SRD-Daten zu sehen.</p></aside>
+      </div>
+      <p class="footnote">Der Katalog enthält veröffentlichte SRD-Inhalte, nicht sämtliche Inhalte kostenpflichtiger D&D-Regelbücher. Datenquelle: 5e-bits; Original: Wizards of the Coast. <a href="https://media.dndbeyond.com/compendium-images/srd/5.2/DE_SRD_CC_v5.2.1.pdf" target="_blank" rel="noopener noreferrer">Offizielles deutsches SRD 5.2.1 öffnen ↗</a></p>
+    </section>
+
+    <section class="workspace" data-panel="characters">
+      <div class="section-head"><div><p class="eyebrow">Charaktere für unterschiedliche Welten</p><h2>Das Charakterlabor</h2><p>Herkunft, Stufensteigerungen und Talente nach SRD 5.2.1. Gespeicherte Entwürfe lassen sich erneut öffnen, steigern und verwalten.</p></div></div>
+      <div class="character-mode-nav" id="character-mode-nav" role="group" aria-label="Charakteransicht wählen">
+        <button type="button" id="character-mode-build" class="character-mode-button" aria-pressed="true" aria-controls="character-design">Erstellen & steigern</button>
+        <button type="button" id="character-mode-play" class="character-mode-button" aria-pressed="false" aria-controls="character-play">Im Spiel</button>
+      </div>
+      <div id="character-design">
+      <div class="editor-layout">
+        <form id="character-form" class="pane form-stack">
+          <div id="character-errors" class="form-errors" role="region" aria-label="Fehler bei der Charaktererstellung" tabindex="-1" hidden></div>
+          <label>Name<input id="character-name" maxlength="60" required placeholder="Name der Figur"></label>
+          <div class="pair"><label>Klasse<select id="character-class" required></select></label><label>Stufe<input id="character-level" type="number" value="8" min="1" max="20" required></label></div>
+          <details class="choice-panel" id="character-multiclass">
+            <summary>Mehrklassen · chronologischer Stufenverlauf <span id="character-multiclass-count"></span></summary>
+            <label><input id="character-multiclass-enabled" type="checkbox"> Klassen bei späteren Stufen wechseln</label>
+            <div id="character-history-panel" hidden>
+              <p class="form-hint">Die erste Klasse bleibt oben festgelegt. Trage für jede weitere Gesamtstufe die tatsächlich gewählte Klasse ein. Attributsvoraussetzungen, Trefferwürfel, Zauberplätze und zusätzliche Übungen werden geprüft. Nicht automatisierbare Klassenmerkmale bleiben ausdrücklich Spielleitungsentscheidungen.</p>
+              <div id="character-level-history" class="pair"></div>
+              <div id="character-multiclass-skills" class="pair"></div>
+            </div>
+          </details>
+          <label id="character-subclass-wrap" hidden>Unterklasse ab Stufe 3<select id="character-subclass"></select></label>
+          <details class="choice-panel" id="character-secondary-subclasses" hidden>
+            <summary>Unterklassen weiterer Klassen</summary>
+            <p class="form-hint">Jede Klasse mit mindestens drei eigenen Stufen benötigt ihre passende SRD-Unterklasse.</p>
+            <div id="character-secondary-subclass-list" class="pair"></div>
+          </details>
+          <details class="choice-panel" id="character-source-decisions" hidden>
+            <summary>Klassenmerkmale · weitere Pflichtwahlen <span id="character-source-decision-count"></span></summary>
+            <p class="form-hint">Orden, Taktiken, Sprachen, Affinitäten und bekannte Tierformen stammen aus freigeschalteten SRD-Merkmalen. Ihre situativen Wirkungen prüft die Spielleitung.</p>
+            <div id="character-source-decision-list" class="pair"></div>
+          </details>
+          <label id="character-land-wrap" hidden>Aktuelles Gelände des Druidenzirkels<select id="character-land"><option value="arid">Trockenland</option><option value="polar">Polarland</option><option value="temperate" selected>Gemäßigtes Land</option><option value="tropical">Tropenland</option></select></label>
+          <div class="pair"><label>Spezies<select id="character-species"></select></label><label>Hintergrund<select id="character-background"></select></label></div>
+          <details class="choice-panel" id="character-heritage" open>
+            <summary>2024-Herkunft · Sprachen, Abstammung, Übungen <span id="character-heritage-count"></span></summary>
+            <p class="form-hint">Common plus zwei weitere gewöhnliche Sprachen. Variationen, Speziesfertigkeiten, Werkzeugwahl und menschliche Herkunftstalente stammen aus den gepinnten SRD-Daten.</p>
+            <div id="character-heritage-choices" class="pair"></div>
+          </details>
+          <details class="choice-panel" id="character-origin-feats" hidden>
+            <summary>Herkunftstalente · Zauber und Zusatzübungen <span id="character-origin-feat-count"></span></summary>
+            <p class="form-hint">Magic Initiate: Zwei Zaubertricks, ein Zauber des 1. Grades und das Zauberattribut pro Quelle. Jede Zauberliste nur einmal. Skilled: drei zusätzliche unterschiedliche Fertigkeits- oder Werkzeugübungen. Wirkungen bleiben bei Bedarf Spielleitungsentscheidungen.</p>
+            <div id="character-origin-feat-choices" class="form-stack"></div>
+          </details>
+          <details class="choice-panel">
+            <summary>Optionale Weltregeln</summary>
+            <p class="form-hint">Das Basisregelsystem bleibt D&D 5.5e. Zusätzliche Weltregeln gelten nur für Figuren, bei denen du sie ausdrücklich aktivierst.</p>
+            <label>Weltmodul<select id="character-world"><option value="">Keines · reines SRD 5.2.1</option><option value="edras-5.5-v0.1">Edras · öffentlicher Regelentwurf</option></select></label>
+            <div id="character-edras-options" hidden>
+              <div class="pair"><label>Potenzial (1–5)<select id="character-edras-potential"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></label><label>LE-Technik<select id="character-edras-technique"></select></label></div>
+              <p class="form-hint">Nur ein <strong>Spieltest-Entwurf</strong>: Der Edras-Fragebogen ermittelt ausschließlich weltbezogene Eigenschaften wie Potenzial und Resonanz, niemals deine D&amp;D-Klasse. Keine geheimen Ergebnisse werden vorweggenommen.</p>
+              <details id="character-edras-questionnaire" class="choice-panel">
+                <summary>17 Fragen · öffentlicher Edras-Abgleich (nicht kanonisch)</summary>
+                <p class="form-hint">16 Situationen und eine Erfahrungsfrage. Antworten, Seed und öffentliches Vorschlagsergebnis sind nachvollziehbar; die endgültige geheime Auswertungsmatrix steht hier <strong>nicht</strong> zur Verfügung. Die Klasse bleibt frei wählbar.</p>
+                <div id="character-edras-question-list" class="edras-question-list"></div>
+                <label>Öffentlicher Seed (kein Geheimwert)<input id="character-edras-seed" spellcheck="false" maxlength="64" autocomplete="off"></label>
+                <div class="action-row"><button type="button" id="character-edras-new-seed">Neuen Seed erzeugen</button><button type="button" id="character-edras-evaluate">Vorschlag berechnen</button></div>
+                <p id="character-edras-results" class="form-hint" role="status" aria-live="polite">Noch nicht ausgewertet.</p>
+                <button id="character-edras-apply" type="button" class="button-secondary" hidden>Öffentlichen Vorschlag übernehmen</button>
+              </details>
+            </div>
+          </details>
+          <div class="pair"><label>Attributsmethode<select id="character-method"><option value="standard">Standardwerte (15 / 14 / 13 / 12 / 10 / 8)</option><option value="point-buy">Punktekauf (27 Punkte)</option><option value="rolled">Gewürfelt / frei vorgegeben</option></select></label><label>Hintergrundboni<select id="character-bonus-mode"><option value="two-one">+2 und +1</option><option value="all-one">Dreimal +1</option></select></label></div>
+          <div class="pair" id="character-bonus-choices"><label>Attribut +2<select id="character-plus-two"></select></label><label>Anderes Attribut +1<select id="character-plus-one"></select></label></div>
+          <p class="form-hint" id="character-origin-help">Grundattribute vor den Boni des Hintergrunds. Die Stufensteigerungen sind noch nicht eingerechnet.</p>
+          <div class="attributes" id="character-attributes">
+            <label>STR<input data-ability="str" type="number" min="3" max="20" value="15"></label>
+            <label>DEX<input data-ability="dex" type="number" min="3" max="20" value="14"></label>
+            <label>CON<input data-ability="con" type="number" min="3" max="20" value="13"></label>
+            <label>INT<input data-ability="int" type="number" min="3" max="20" value="12"></label>
+            <label>WIS<input data-ability="wis" type="number" min="3" max="20" value="10"></label>
+            <label>CHA<input data-ability="cha" type="number" min="3" max="20" value="8"></label>
+          </div>
+          <details class="choice-panel" id="character-hitpoints">
+            <summary>Trefferpunkte nach 2024 <span id="character-hp-count"></span></summary>
+            <p class="form-hint">Auf Stufe 1 erhältst du den maximalen Trefferwürfel plus KON. Auf jeder weiteren Stufe kannst du den festen Klassenwert nehmen oder den Trefferwürfel werfen. KON-Änderungen werden für alle Stufen eingerechnet.</p>
+            <label>Methode ab Stufe 2<select id="character-hp-method"><option value="fixed">Fester Klassenwert (Standard)</option><option value="rolled">Trefferwürfel einzeln festhalten</option></select></label>
+            <div id="character-hp-roll-panel" hidden>
+              <p class="form-hint">Fehlende Würfe können mit einem Klick gewürfelt oder von eigenen Würfeln übertragen werden. Bereits eingetragene Werte werden nicht überschrieben.</p>
+              <button class="button-secondary" id="character-hp-roll-missing" type="button">Fehlende Trefferwürfel würfeln</button>
+              <div class="hp-rolls" id="character-hp-rolls"></div>
+            </div>
+          </details>
+          <details class="choice-panel" open>
+            <summary>Fertigkeitsübungen der Klasse <span id="character-skill-count"></span></summary>
+            <p class="form-hint">Wähle die von der Klasse erlaubten Fertigkeiten. Die festen Hintergrundübungen werden automatisch berücksichtigt.</p>
+            <div id="character-skill-choices" class="pair"></div>
+          </details>
+          <details class="choice-panel" id="character-training" hidden>
+            <summary>Zusatzfertigkeiten und Expertise <span id="character-training-count"></span></summary>
+            <p class="form-hint">Zusätzliche Übungen, Expertise und Fertigkeitsboni nach Klassenstufe und Unterklasse. Bereits geübte Fertigkeiten werden nicht doppelt angeboten.</p>
+            <div id="character-bonus-skill-choices" class="pair"></div>
+            <div id="character-expertise-choices" class="pair"></div>
+          </details>
+          <details class="choice-panel" id="character-mastery" hidden>
+            <summary>Waffenmeisterschaften <span id="character-mastery-count"></span></summary>
+            <p class="form-hint">Aus der 2024-SRD-Ausrüstung; nur erlaubte Waffen. Die gewählten Waffen dürfen bei einer langen Rast nach den Klassenregeln gewechselt werden.</p>
+            <div id="character-mastery-choices" class="pair"></div>
+          </details>
+          <details class="choice-panel" id="character-class-options" hidden>
+            <summary>Weitere Klassenwahlen <span id="character-class-option-count"></span></summary>
+            <p class="form-hint">Kampfstile, Metamagie und Hexenmeister-Anrufungen werden nach Stufe und Voraussetzungen geprüft. Wiederholbare Anrufungen enthalten ihr konkretes Ziel.</p>
+            <div id="character-style-choices" class="pair"></div>
+            <div id="character-style-cantrips" class="pair"></div>
+            <div id="character-metamagic-choices" class="pair"></div>
+            <div id="character-invocation-choices" class="pair"></div>
+          </details>
+          <details class="choice-panel">
+            <summary>Rüstung und Schild · Kampfwerte</summary>
+            <p class="form-hint">Tatsächlich angelegte Rüstung und Schild bestimmen RK und Bewegung. Ihr Besitz wird separat im Inventar geführt.</p>
+            <div class="pair"><label>Getragene Rüstung<select id="character-armor"></select></label><label>Schild führen<select id="character-shield"><option value="no">Nein</option><option value="yes">Ja</option></select></label></div>
+          </details>
+          <details class="choice-panel" id="character-starter">
+            <summary>2024-Startausrüstung (nur neue Figuren)</summary>
+            <p class="form-hint">Klasse und Hintergrund liefern jeweils eine eigene SRD-Ausrüstungswahl. Instrumente, Werkzeuge und Symbole werden ausdrücklich gewählt; beim Erstellen landet alles einmalig im Inventar. Ausrüstung ist nicht automatisch angelegt.</p>
+            <div class="pair"><label>Klassenpaket<select id="character-kit-class"></select></label><label>Hintergrundpaket<select id="character-kit-background"></select></label></div>
+            <div id="character-kit-choices" class="pair"></div>
+          </details>
+          <details id="character-advancement" class="choice-panel" open hidden>
+            <summary>Stufenentscheidungen <span id="character-advancement-count"></span></summary>
+            <p class="form-hint">Wähle eine Attributsverbesserung oder ein verfügbares SRD-Talent. Voraussetzungen werden geprüft; komplexe Wirkungen bleiben vorerst manuell.</p>
+            <div id="character-improvements" class="advancement-list"></div>
+          </details>
+          <details id="character-spells" class="choice-panel" hidden>
+            <summary>Zaubertricks und vorbereitete Zauber <span id="character-spells-count"></span></summary>
+            <p class="form-hint">SRD 5.2.1: Klassenzauber, Zusatzzauber, Magical Secrets, Mystic Arcanum und Signaturzauber werden gemeinsam geprüft. Sonderwahlen zählen nur dann gegen die Vorbereitung, wenn ihre Klassenregeln das verlangen.</p>
+            <label>Zauber suchen<input id="character-spell-search" type="search" placeholder="Name oder Zaubergrad" autocomplete="off"></label>
+            <p id="character-spell-search-status" class="form-hint" role="status" aria-live="polite">Zauberliste wird geladen …</p>
+            <div id="character-spell-options" class="spell-options"></div>
+          </details>
+          <details id="character-secondary-spells" class="choice-panel" hidden>
+            <summary>Zauber weiterer Klassen <span id="character-secondary-spells-count"></span></summary>
+            <p class="form-hint">Jede Klasse lernt und bereitet Zauber nach ihrer eigenen Klassenstufe vor. Gemeinsame höhere Zauberplätze erweitern nur die Wirkmöglichkeiten. Zusätzliche Klassenzauber und Sonderwahlen erscheinen getrennt.</p>
+            <label>Zauber weiterer Klassen suchen<input id="character-secondary-spell-search" type="search" placeholder="Name oder Zaubergrad" autocomplete="off"></label>
+            <p id="character-secondary-spell-search-status" class="form-hint" role="status" aria-live="polite">Zauberliste wird geladen …</p>
+            <div id="character-secondary-spell-panels" class="form-stack"></div>
+          </details>
+          <p id="character-edit-state" class="form-hint" role="status">Neuer Charakterentwurf. Bestehende Figuren bleiben unverändert.</p>
+          <button class="button-primary" id="character-save" type="submit">Entwurf in Würfelbund speichern</button>
+          <button class="button-secondary" id="character-cancel-edit" type="button" hidden>Bearbeitung beenden · neuer Entwurf</button>
+          <p class="form-hint">Speichert lokal. Bei einer Bearbeitung wird ausschließlich der gewählte Charakter aktualisiert; verbrauchte Ressourcen bleiben soweit möglich erhalten.</p>
+        </form>
+        <aside class="pane preview" id="character-preview" aria-label="Charaktervorschau">Wähle eine Klasse für die Vorschau.</aside>
+      </div>
+      </div>
+      <section class="pane tracker-pane" id="character-play" aria-label="Spielbogen und Ressourcen gespeicherter Figuren" hidden>
+        <div class="section-head"><div><h3>Charakterzustand im Spiel</h3><p>Trefferpunkte, Zustände, Trefferwürfel und Klassenressourcen für lokal gespeicherte Figuren.</p></div></div>
+        <label>Figur wählen<select id="tracker-character" aria-label="Gespeicherte Figur auswählen"></select></label>
+        <div class="action-row tracker-actions"><button type="button" id="tracker-edit">Figur im Charakterlabor bearbeiten</button></div>
+        <div id="tracker-panel" hidden>
+          <section id="tracker-sheet" class="character-sheet" aria-label="Werte und Herkunft der Figur"></section>
+          <nav class="sheet-jump-links" aria-label="Spielbereiche"><a href="#tracker-vitals">TP und Würfe</a><a id="sheet-jump-casting" href="#tracker-casting">Zauber</a><a href="#tracker-inventory">Inventar</a><a href="#tracker-list">Ressourcen</a></nav>
+          <div id="tracker-vitals" class="vitals-pane" aria-live="polite"></div>
+          <div id="tracker-casting" class="vitals-pane" hidden></div>
+          <div id="tracker-inventory" class="vitals-pane" aria-live="polite"></div>
+          <div id="tracker-list" class="tracker-list" aria-live="polite"></div>
+          <div class="action-row" id="tracker-rest"><button type="button" id="tracker-short-rest">Kurze Rast</button><button type="button" id="tracker-long-rest">Lange Rast</button></div>
+          <div id="tracker-edras" class="edras-tracker" hidden></div>
+        </div>
+        <p class="form-hint" id="tracker-help">Noch keine lokal gespeicherte Figur.</p>
+      </section>
+    </section>
+
+    <section class="workspace" data-panel="abilities">
+      <div class="section-head"><div><p class="eyebrow">Hausregeln ohne Programmierung</p><h2>Fähigkeitsbaukasten</h2><p>Eigene Fähigkeiten sind Daten und können unabhängig von einer bestimmten Kampagnenwelt gespeichert werden.</p></div><span class="count">Effekt-Engine v1</span></div>
+      <div class="editor-layout">
+        <form id="ability-form" class="pane form-stack">
+          <label>Regelpaket<select id="ability-pack"></select></label>
+          <label>Name der Fähigkeit<input id="ability-name" maxlength="90" required placeholder="z. B. Fadenschild"></label>
+          <label>Beschreibung<textarea id="ability-description" maxlength="2500" rows="3" placeholder="Was bewirkt die Fähigkeit in der Spielwelt?"></textarea></label>
+          <div class="pair"><label>Aktivierung<select id="ability-activation"><option value="action">Aktion</option><option value="bonus_action">Bonusaktion</option><option value="reaction">Reaktion</option><option value="passive">Passiv</option><option value="manual">Manuell / Spielleitung</option></select></label><label>Mindeststufe<input id="ability-level" type="number" value="1" min="1" max="20" required></label></div>
+          <div class="pair"><label>Ressourcenname<input id="ability-resource" maxlength="48" placeholder="z. B. mana, fokus"></label><label>Verbrauch<input id="ability-cost" type="number" value="0" min="0" max="1000" required></label></div>
+          <div class="pair"><label>Effekt<select id="ability-effect"><option value="damage">Schaden würfeln</option><option value="healing">Heilung</option><option value="temporary_hp">Temporäre Trefferpunkte</option><option value="reduce_damage">Schaden reduzieren</option><option value="modifier">Dauerhafter Zahlenbonus</option><option value="manual">Spielentscheid (manuell)</option></select></label><label id="ability-value-label">Würfelformel<input id="ability-value" value="2d6" required maxlength="12"></label></div>
+          <label id="ability-target-wrap" hidden>Zielwert<select id="ability-target"><option value="armor_class">Rüstungsklasse</option><option value="initiative">Initiative</option><option value="speed">Bewegung</option><option value="max_hp">Max. Trefferpunkte</option><option value="attack_bonus">Angriffsbonus</option><option value="spell_dc">Zauber-SG</option></select></label>
+          <button type="submit" class="button-primary">Fähigkeit hinzufügen</button>
+          <p class="form-hint">Aus Sicherheitsgründen akzeptiert der Baukasten nur vordefinierte Effektarten und überprüfte Würfelformeln – keinen ausführbaren Code.</p>
+        </form>
+        <aside class="pane preview"><h3>Fähigkeiten im Paket</h3><div id="ability-list" class="ability-list"></div><div class="result" id="ability-test" aria-live="polite">Wähle eine Fähigkeit zum Testen.</div></aside>
+      </div>
+    </section>
+
+    <section class="workspace" data-panel="packs">
+      <div class="section-head"><div><p class="eyebrow">Regeln teilen und wiederverwenden</p><h2>Regelpaket-Verwaltung</h2><p>Jeder Nutzer kann eigene Pakete verwalten; Welten und Kampagnen können später gezielt Pakete aktivieren.</p></div></div>
+      <div class="editor-layout">
+        <div class="pane form-stack">
+          <form id="pack-form" class="form-stack"><label>Neues Regelpaket<input id="pack-name" maxlength="90" required placeholder="z. B. Meine Zauber und Talente"></label><button class="button-primary" type="submit">Regelpaket anlegen</button></form>
+          <div class="divider"></div>
+          <label>JSON-Paket importieren<input id="pack-import" type="file" accept="application/json,.json"></label>
+          <p class="form-hint">Alle Entwürfe werden zuerst auf diesem Gerät gespeichert. Über den Import lassen sich Pakete zwischen Geräten übertragen.</p>
+          <div class="divider"></div>
+          <h3>Optional: privater Cloud-Speicher</h3>
+          <p id="cloud-help" class="form-hint">Melde dich auf Würfelbund an, um Regelpakete in deinem Benutzerkonto zu speichern.</p>
+          <div class="pair"><button id="cloud-save" type="button" class="button-secondary">Paket online sichern</button><button id="cloud-load" type="button" class="button-secondary">Meine Online-Pakete laden</button></div>
+        </div>
+        <aside class="pane"><div class="section-head"><h3>Meine Pakete</h3><span id="pack-count" class="count">0</span></div><div id="pack-list" class="pack-list"></div></aside>
+      </div>
+    </section>
+    <div id="studio-notice" class="notice" role="status" aria-live="polite"></div>
+  </main>
+  <footer class="site-footer">Dieses Werk enthält Material aus dem Systemreferenzdokument 5.2.1 („SRD 5.2.1“) von Wizards of the Coast LLC, verfügbar unter <a href="https://www.dndbeyond.com/srd">dndbeyond.com/srd</a>. Das SRD 5.2.1 ist lizenziert gemäß <a href="https://creativecommons.org/licenses/by/4.0/legalcode.de">Creative Commons Namensnennung 4.0</a>. · <a href="licenses/5e-bits-MIT.md">5e-bits MIT-Lizenz</a> · <a href="datenschutz.html">Datenschutz (Entwurf)</a> · <a href="impressum.html">Impressum/Kontakt (Entwurf)</a></footer>
+</body>
+</html>

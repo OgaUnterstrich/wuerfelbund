@@ -1,0 +1,28 @@
+{
+  "name": "wuerfelbund-security-checks",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:logic": "node --test tests/*.test.mjs",
+    "test:firestore": "firebase emulators:exec --only firestore --project demo-wuerfelbund 'node --test tests/firestore-security.emulator.mjs'",
+    "test:browser": "playwright test",
+    "test:browser:isolated": "npm run test:browser:isolated:chromium && npm run test:browser:isolated:firefox",
+    "test:browser:isolated:chromium": "BROWSER_PROJECT=chromium firebase emulators:exec --only auth,firestore --project demo-wuerfelbund 'playwright test --project=chromium'",
+    "test:browser:isolated:firefox": "BROWSER_PROJECT=firefox firebase emulators:exec --only auth,firestore --project demo-wuerfelbund 'playwright test --project=firefox'",
+    "build:public": "node scripts/build-public.mjs",
+    "test:public": "node --test ops/tests/public-build.test.mjs",
+    "check:release": "node scripts/check-release-gate.mjs"
+  },
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "6.0.0",
+    "@playwright/test": "1.64.1",
+    "axe-core": "4.11.0",
+    "firebase": "13.1.0",
+    "firebase-tools": "15.34.1"
+  },
+  "overrides": {
+    "@firebase/firestore": {
+      "@grpc/grpc-js": "1.14.6"
+    }
+  }
+}
