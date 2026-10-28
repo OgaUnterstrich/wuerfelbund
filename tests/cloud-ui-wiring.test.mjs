@@ -64,3 +64,9 @@ test('B05: Kampagnenquellen werden vor Upload und Spieltransaktion gegen denselb
   assert.match(html, /let currentSources = null, sourceRequest = 0/);
   assert.match(html, /sourceRequest\+\+/);
 });
+
+test('C4: Kampagnenübersicht verliert keine Einträge oberhalb von 60 und verschweigt keinen Netzfehler', () => {
+  assert.doesNotMatch(html, /records\.docs\.slice\(0,\s*60\)/);
+  assert.match(html, /loadIndexedCampaigns\(records\.docs, async record/);
+  assert.match(html, /if \(!found\) return/);
+});

@@ -1,5 +1,7 @@
 # Würfelbund: verbindliche Batch-Roadmap von 0.28 zur öffentlichen v1-Beta
 
+> **Statusnachtrag C4 · 28.10.2026:** C3 (separates Staging `wuerfelbund-staging`, echte 9/9, GitHub-CI) ist durch den Betreiber bestätigt. C4-Automation und lokales Audit sind umgesetzt, ein stilles 60-Kampagnen-Limit ist behoben. Die neue Browsermatrix und native Zoom-/Screenreader-Stichproben bleiben als **Gate-C-Restnachweise** offen. Details: [C4-Prüfbericht](B15_C4_PRUEFBERICHT.md). B15 ist deshalb noch offen; danach folgt nur B16 als weiterer Hauptbatch. Keine Veröffentlichung oder Nutzertests zwischendurch.
+
 Stand: 27.10.2026 · Grundlage: lokale Projektfassung 0.28 und tatsächlich dokumentierte Grenzen in `README.md`, `ARCHITECTURE.md`, `EDRAS_INTEGRATION.md`. **Plan, keine Behauptung bereits implementierter Funktionen.**
 
 ## Produkt- und Releasegrenze

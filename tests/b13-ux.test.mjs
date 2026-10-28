@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
-import { cloudConnectionState, matchesSearch, searchFeedback } from '../js/rules/ux.mjs';
+import { cloudConnectionState, loadIndexedCampaigns, matchesSearch, searchFeedback } from '../js/rules/ux.mjs';
 
 const home = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const studio = readFileSync(new URL('../studio.html', import.meta.url), 'utf8');
@@ -103,4 +103,34 @@ test('Charakter- und Kampagnen-Haupteinstiege bleiben unmissverständlich', () =
   assert.match(editor, /box\.focus\(\{ preventScroll: true \}\)/);
   assert.match(home, /Lokale Chronik, Würfel und Initiative werden nicht synchronisiert/);
   assert.match(home, /Nur der geöffnete Cloud-Spielmodus überträgt Änderungen/);
+});
+
+test('C4: 73 Kampagnen ohne Abschneiden laden, maximal 20 gleichzeitige Abfragen', async () => {
+  const ids = Array.from({length: 73}, (_, i) => `campaign-${i}`);
+  let active = 0, maximum = 0, count = 0;
+  const result = await loadIndexedCampaigns(ids, async id => {
+    count++; active++; maximum = Math.max(maximum, active);
+    await new Promise(resolve => setImmediate(resolve));
+    active--;
+    return {id};
+  }, () => true);
+  assert.equal(result.length, 73);
+  assert.equal(result.at(-1).id, 'campaign-72');
+  assert.equal(count, 73);
+  assert.equal(maximum, 20);
+});
+
+test('C4: Entzug blendet Index aus, Netzwerkfehler ist kein leerer Kampagnenbestand', async () => {
+  const ids = ['erlaubt', 'entfernt', 'nicht-vorhanden'];
+  const read = async id => {
+    if (id === 'entfernt') throw {code: 'permission-denied'};
+    if (id === 'nicht-vorhanden') throw {code: 'not-found'};
+    return {id};
+  };
+  assert.deepEqual(await loadIndexedCampaigns(ids, read, () => true), [{id: 'erlaubt'}]);
+  await assert.rejects(loadIndexedCampaigns(ids, async id => {
+    if (id === 'entfernt') throw {code: 'unavailable'};
+    return {id};
+  }, () => true), error => error.code === 'unavailable');
+  assert.equal(await loadIndexedCampaigns(ids, read, () => false), null);
 });

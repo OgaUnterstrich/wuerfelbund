@@ -36,6 +36,8 @@ jobs:
         run: npm run build:public
       - name: Web-Artefakt auf unerwünschte Inhalte prüfen
         run: npm run test:public
+      - name: C4 · Lizenz-, Datenfluss-, UX- und Freigabe-Audit
+        run: npm run test:c4:audit
 
   browser:
     needs: logic

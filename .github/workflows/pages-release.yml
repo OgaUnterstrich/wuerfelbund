@@ -32,6 +32,7 @@ jobs:
       - run: npm run test:c3:emulator
       - run: npm run build:public
       - run: npm run test:public
+      - run: npm run test:c4:audit
       - name: Browserfreigabe zwingend erneut prüfen
         run: npx playwright install --with-deps chromium firefox
       - run: npm run test:browser:isolated

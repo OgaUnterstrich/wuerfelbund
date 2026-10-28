@@ -1,5 +1,7 @@
 # B15-C3 – Prüfbericht (28.10.2026)
 
+> **Verbindlicher externer Nachtrag vom 28.10.2026 (C4-Eingang):** Der Betreiber bestätigt die vollständig eingerichtete unabhängige Firebase-Spark-Umgebung `wuerfelbund-staging`, aktivierte E-Mail/Passwort-Authentifizierung, erfolgreich bereitgestellte Firestore-Regeln und den echten Lauf `npm run test:c3:staging` mit **9/9 bestanden, 0 fehlgeschlagen**. Die GitHub-Actions-Prüfungen wurden ebenfalls als erfolgreich gemeldet; der produktive Firebase-Projektstand `wuerfelbund` ist unverändert. **C3 gilt damit als BESTANDEN.** Die unten aufgeführten früheren „Staging ausstehend“-Angaben sind der historische lokale Stand **vor** diesem externen Nachweis und gelten nicht mehr als offene C3-Prüfung. Eine Run-URL und ein Rohlog wurden nicht übermittelt; die Aussage ist als Betreiberbestätigung gekennzeichnet. Sichere Bereinigung verbliebener Testdaten: [C4-Staging-Bereinigung](B15_C4_STAGING_BEREINIGUNG.md).
+
 **Ergebnis:** Implementierung und lokale C3-Automation bestanden; **reales Firebase-Staging noch offen**, bis der Betreiber ein separates Spark-Projekt einrichtet und die dortigen Tests ausführt. **B15 / Gate C / Veröffentlichung bleiben GESPERRT.**
 
 ## 0. Eingangsdatei und GitHub-Ausgangsnachweis

@@ -14,6 +14,7 @@
     "test:browser:isolated:firefox": "BROWSER_PROJECT=firefox firebase emulators:exec --only auth,firestore --project demo-wuerfelbund 'playwright test --project=firefox'",
     "build:public": "node scripts/build-public.mjs",
     "test:public": "node --test ops/tests/public-build.test.mjs",
+    "test:c4:audit": "node --test ops/tests/gate-c.test.mjs",
     "check:release": "node scripts/check-release-gate.mjs"
   },
   "devDependencies": {

@@ -19,6 +19,24 @@ export function cloudConnectionState({ online, signedIn }) {
   return { label: 'Browser meldet online · Cloud-Aktionen benötigen Serverbestätigung', canTransfer: true };
 }
 
+/** Alle Kampagnenindizes laden, aber nie mehr als 20 Cloud-Lesungen parallel. */
+export async function loadIndexedCampaigns(records, readCampaign, isCurrent) {
+  const campaigns = [];
+  for (let offset = 0; offset < records.length; offset += 20) {
+    if (!isCurrent()) return null; // Abmeldung/Kampagnenwechsel: veraltete Antwort verwerfen.
+    const group = await Promise.all(records.slice(offset, offset + 20).map(async record => {
+      try { return await readCampaign(record); }
+      catch (error) {
+        // Verwaiste Indizes sind zulässig. Netzwerk-/Serverausfälle dagegen anzeigen.
+        if (error?.code === 'permission-denied' || error?.code === 'not-found') return null;
+        throw error;
+      }
+    }));
+    campaigns.push(...group);
+  }
+  return campaigns.filter(Boolean);
+}
+
 /** Ältere gültige Spielstände dürfen Zeitstempel auslassen; die Ansicht muss trotzdem laden. */
 export function storedDateLabel(value, { time = false } = {}) {
   if (typeof value !== 'string' || !value.trim()) return 'Datum unbekannt';

@@ -226,7 +226,7 @@
     import { loadLocalPacks } from "./js/rules/packs.mjs";
     import { EDRAS_SOURCE, defaultCampaignRules, normalizeCampaignRules,
       preparePublishedPack, resolveCampaignSources, pinCharacterSources } from "./js/rules/sources.mjs";
-    import { cloudConnectionState } from "./js/rules/ux.mjs";
+    import { cloudConnectionState, loadIndexedCampaigns } from "./js/rules/ux.mjs";
     import { firebaseRuntime } from "./js/rules/firebase-runtime.mjs";
 
     const runtime = firebaseRuntime(location.hostname, location.protocol);
@@ -788,15 +788,13 @@
       container.textContent = "Kampagnen werden geladen …";
       try {
         const records = await getDocs(collection(db, "users", uid, "campaigns"));
-        const campaigns = await Promise.all(records.docs.slice(0,60).map(async record => {
-          try {
-            const snapshot = await getDoc(doc(db, "campaigns", record.id));
-            if (!snapshot.exists()) return null;
-            return {id:snapshot.id, ...snapshot.data(), owner:snapshot.data().ownerId === uid};
-          } catch { return null; }
-        }));
+        const found = await loadIndexedCampaigns(records.docs, async record => {
+          const snapshot = await getDoc(doc(db, "campaigns", record.id));
+          if (!snapshot.exists()) return null;
+          return {id:snapshot.id, ...snapshot.data(), owner:snapshot.data().ownerId === uid};
+        }, () => currentUser?.uid === uid && version === campaignLoadVersion && navigator.onLine !== false);
+        if (!found) return;
         if (currentUser?.uid !== uid || version !== campaignLoadVersion || navigator.onLine === false) return;
-        const found = campaigns.filter(Boolean);
         knownCampaigns = found;
         if (currentCampaign && !found.some(c => c.id === currentCampaign)) clearCloudSelection();
         if (!found.length) {
