@@ -85,6 +85,76 @@ function liveCharacter() {
         inventory: { items: { longsword: 1 } }, tracker: { resources: { second_wind_uses: 1 } } } } };
 }
 
+test('B16-R1: verifizierte SL übergibt Besitz atomar, bisherige SL bleibt Spieler', async () => {
+  await seed({ members: ['bob', 'carol'], edras: false });
+  const oldOwner = env.authenticatedContext('alice', { email: 'alice@example.org', email_verified: true }).firestore();
+  const batch = writeBatch(oldOwner);
+  batch.set(memberRef(oldOwner, 'alice'), { role: 'player', joinedAt: serverTimestamp() });
+  batch.set(indexRef(oldOwner, 'alice'), { campaignId: 'abc12345678901234567', role: 'player', addedAt: serverTimestamp() });
+  batch.update(campaignRef(oldOwner), { ownerId: 'bob' });
+  await assertSucceeds(batch.commit());
+  assert.equal((await assertSucceeds(getDoc(campaignRef(db('bob'))))).data().ownerId, 'bob');
+  await assertSucceeds(getDoc(campaignRef(db('alice'))));
+  await assertSucceeds(updateDoc(campaignRef(db('bob')), { name: 'Neue Spielleitung' }));
+  await assertFails(updateDoc(campaignRef(db('alice')), { name: 'Unbefugte SL' }));
+  await assertFails(updateDoc(campaignRef(db('carol')), { ownerId: 'carol' }));
+  assert.equal((await assertSucceeds(getDoc(indexRef(db('alice'))))).data().role, 'player');
+});
+
+test('B16-R1: unbestätigte, unvollständige, gesperrte und fremde Besitzerwechsel verboten', async () => {
+  await seed({ members: ['bob'], edras: false });
+  const makeTransfer = database => {
+    const batch = writeBatch(database);
+    batch.set(memberRef(database, 'alice'), { role: 'player', joinedAt: serverTimestamp() });
+    batch.set(indexRef(database, 'alice'), { campaignId: 'abc12345678901234567', role: 'player', addedAt: serverTimestamp() });
+    batch.update(campaignRef(database), { ownerId: 'bob' });
+    return batch.commit();
+  };
+  await assertFails(makeTransfer(db('alice'))); // kein email_verified-Claim
+  const verified = env.authenticatedContext('alice', { email_verified: true }).firestore();
+  await assertFails(updateDoc(campaignRef(verified), { ownerId: 'bob' })); // alte SL ohne Mitgliedschaft
+  await assertFails(updateDoc(campaignRef(db('bob')), { ownerId: 'bob' }));
+  await assertFails(updateDoc(campaignRef(verified), { ownerId: 'mallory' }));
+  await assertSucceeds(setDoc(blockedRef(db('alice')), { createdAt: serverTimestamp() }));
+  await assertFails(makeTransfer(verified));
+  assert.equal((await assertSucceeds(getDoc(campaignRef(db('alice'))))).data().ownerId, 'alice');
+});
+
+test('B16-R1: Spieler kann eigene Cloud-Daten entfernen, Fremd- und Kampagnenlöschung bleibt verboten', async () => {
+  await seed({ members: ['bob', 'carol'] });
+  const player = db('bob');
+  await assertSucceeds(setDoc(characterRef(player), liveCharacter()));
+  await assertFails(deleteDoc(characterRef(db('carol'))));
+  await assertFails(deleteDoc(campaignRef(db('alice'))));
+  await assertFails(deleteDoc(campaignRef(player)));
+  await assertSucceeds(deleteDoc(characterRef(player)));
+  const leave = writeBatch(player);
+  leave.delete(memberRef(player, 'bob'));
+  leave.delete(indexRef(player, 'bob'));
+  await assertSucceeds(leave.commit());
+  await assertFails(getDoc(campaignRef(player)));
+  await assertSucceeds(getDoc(campaignRef(db('carol'))));
+});
+
+test('B16-R1: gesperrter Spieler darf fremde und eigene Cloud-Figuren nicht ungesehen löschen', async () => {
+  await seed({ members: ['bob'] });
+  await assertSucceeds(setDoc(characterRef(db('bob')), liveCharacter()));
+  await assertSucceeds(setDoc(blockedRef(db('alice')), { createdAt: serverTimestamp() }));
+  await assertFails(deleteDoc(characterRef(db('bob'))));
+  await assertFails(deleteDoc(characterRef(db('mallory'))));
+});
+
+test('B16-R1: keine indexlosen Kampagnen oder unerreichbaren Mitgliedschaften anlegbar', async () => {
+  const owner = db('alice');
+  await assertFails(setDoc(campaignRef(owner), {
+    ownerId: 'alice', name: 'Verwaist', description: '', createdAt: serverTimestamp(),
+  }));
+  await createCampaign();
+  await assertFails(setDoc(memberRef(db('bob'), 'bob'), { role: 'player', joinedAt: serverTimestamp() }));
+  await joinCampaign('bob');
+  assert.equal((await assertSucceeds(getDoc(indexRef(db('bob'), 'bob')))).data().role, 'player');
+});
+
 test('B05: Standardkampagne nur SRD; Edras wird erst nach SL-Freigabe speicherbar', async () => {
   await seed({ edras: false });
   const otherCampaign = 'other123456789012345';

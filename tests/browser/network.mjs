@@ -1,35 +1,28 @@
-const allowedHosts = new Set(['127.0.0.1', 'localhost', 'www.gstatic.com']);
-const cdnCache = new Map();
+import { readFileSync } from 'node:fs';
 
-async function readOfficialSdk(url) {
-  if (!cdnCache.has(url)) {
-    cdnCache.set(url, fetch(url).then(async response => {
-      if (!response.ok) throw new Error(`Firebase-CDN antwortet mit HTTP ${response.status}`);
-      return { status: response.status,
-        contentType: response.headers.get('content-type') || 'text/javascript',
-        body: Buffer.from(await response.arrayBuffer()) };
-    }));
-  }
-  try { return await cdnCache.get(url); }
-  catch (error) { cdnCache.delete(url); throw error; }
-}
+const allowedHosts = new Set(['127.0.0.1', 'localhost']);
+const sdkVersion = '13.1.0';
+const installedVersion = JSON.parse(readFileSync(new URL('../../node_modules/firebase/package.json', import.meta.url))).version;
+if (installedVersion !== sdkVersion) throw new Error(`Browser-SDK-Version erwartet ${sdkVersion}, installiert ${installedVersion}`);
+const sdkBundles = new Map(['app', 'auth', 'firestore', 'app-check'].map(name => [
+  `/firebasejs/${sdkVersion}/firebase-${name}.js`,
+  readFileSync(new URL(`../../node_modules/firebase/firebase-${name}.js`, import.meta.url)),
+]));
 
-/** Nur erlaubte Ressourcen; optionaler Relay für lokale Prüfnetze ohne Browser-CDN-Zugang. */
+/** Browser greift nur auf lokale Demo-Emulatoren zu; offizielle, versionierte
+ * SDK-Bundles werden aus dem bereits installierten Firebase-NPM-Paket geliefert.
+ * Keine externen CDN-/Firebase-Anfragen während der Browser-E2E-Prüfung. */
 export async function isolateBrowserNetwork(context) {
   await context.route('**/*', async route => {
     const url = new URL(route.request().url());
+    if (url.hostname === 'www.gstatic.com' && url.protocol === 'https:') {
+      const bundle = sdkBundles.get(url.pathname);
+      return bundle ? route.fulfill({ status: 200, contentType: 'text/javascript',
+        headers: { 'access-control-allow-origin': '*' }, body: bundle })
+        : route.abort('blockedbyclient');
+    }
     if (!allowedHosts.has(url.hostname) || !['http:', 'https:'].includes(url.protocol)) {
       return route.abort('blockedbyclient');
-    }
-    if (process.env.WUERFELBUND_TEST_CDN_RELAY === '1' && url.hostname === 'www.gstatic.com') {
-      try {
-        const sdk = await readOfficialSdk(url.href);
-        return route.fulfill({ status: sdk.status, contentType: sdk.contentType,
-          headers: { 'access-control-allow-origin': '*' }, body: sdk.body });
-      } catch (error) {
-        console.error(`Firebase-CDN nicht erreichbar: ${url.pathname}: ${error.message}`);
-        return route.abort('failed');
-      }
     }
     return route.continue();
   });

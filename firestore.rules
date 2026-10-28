@@ -1,6 +1,6 @@
 rules_version = '2';
 
-// Würfelbund B14 – versionierte Prüfgrundlage; NICHT automatisch live veröffentlichen.
+// Würfelbund B16-R1 – versionierte Prüfgrundlage; NICHT automatisch live veröffentlichen.
 // Kampagnen-IDs sind Einladungsgeheimnisse. Rollen entstehen ausschließlich
 // aus ownerId der Kampagne bzw. eigener Mitgliedschaft, nie aus dem Nutzerindex.
 service cloud.firestore {
@@ -19,6 +19,10 @@ service cloud.firestore {
 
     function blockedPath(campaignId, userId) {
       return /databases/$(database)/documents/campaigns/$(campaignId)/blockedUsers/$(userId);
+    }
+
+    function userCampaignIndexPath(campaignId, userId) {
+      return /databases/$(database)/documents/users/$(userId)/campaigns/$(campaignId);
     }
 
     function isOwner(campaignId) {
@@ -75,16 +79,38 @@ service cloud.firestore {
         && data.role == 'player' && data.joinedAt is timestamp;
     }
 
+    // Ein enger, atomarer Besitzerwechsel: die bisherige SL wird gleichzeitig
+    // Spieler und ihr persönlicher Index wird korrigiert. Die Nachfolge muss
+    // bereits Mitglied sein; niemand darf sich selbst eine Rolle zuschreiben.
+    function validOwnerHandover(campaignId) {
+      let successor = request.resource.data.ownerId;
+      return request.auth.token.get('email_verified', false) == true
+        && successor != request.auth.uid
+        && exists(memberPath(campaignId, successor))
+        && get(memberPath(campaignId, successor)).data.role == 'player'
+        && !exists(blockedPath(campaignId, successor))
+        && existsAfter(memberPath(campaignId, request.auth.uid))
+        && getAfter(memberPath(campaignId, request.auth.uid)).data.role == 'player'
+        && existsAfter(userCampaignIndexPath(campaignId, request.auth.uid))
+        && getAfter(userCampaignIndexPath(campaignId, request.auth.uid)).data.role == 'player';
+    }
+
     match /campaigns/{campaignId} {
       allow get: if isParticipant(campaignId);
       allow list: if false; // Die bestehende Website liest nur bekannte IDs.
       allow create: if signedIn() && validCampaign(request.resource.data)
         && request.resource.data.ownerId == request.auth.uid
-        && request.resource.data.createdAt == request.time;
+        && request.resource.data.createdAt == request.time
+        && existsAfter(userCampaignIndexPath(campaignId, request.auth.uid))
+        && getAfter(userCampaignIndexPath(campaignId, request.auth.uid)).data.role == 'owner';
       allow update: if isOwner(campaignId) && validCampaign(request.resource.data)
-        && request.resource.data.ownerId == resource.data.ownerId
         && request.resource.data.createdAt == resource.data.createdAt
-        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name', 'description', 'rules']);
+        && (
+          (request.resource.data.ownerId == resource.data.ownerId
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name', 'description', 'rules']))
+          || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['ownerId'])
+            && validOwnerHandover(campaignId))
+        );
       allow delete: if false; // Kein ungeprüftes rekursives Löschen von Kampagnendaten.
 
       match /members/{userId} {
@@ -93,7 +119,9 @@ service cloud.firestore {
         allow create: if signedIn() && request.auth.uid == userId
           && !exists(blockedPath(campaignId, userId))
           && exists(campaignPath(campaignId)) && validMember(request.resource.data)
-          && request.resource.data.joinedAt == request.time;
+          && request.resource.data.joinedAt == request.time
+          && existsAfter(userCampaignIndexPath(campaignId, userId))
+          && getAfter(userCampaignIndexPath(campaignId, userId)).data.role == 'player';
         allow update: if false; // Rolle/Beitrittszeit bleiben unveränderlich.
         allow delete: if signedIn() && (request.auth.uid == userId || isOwner(campaignId));
       }

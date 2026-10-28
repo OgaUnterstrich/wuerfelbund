@@ -17,7 +17,7 @@ const expectedExtension = path => path.startsWith('js/') ? '.mjs'
   : path.startsWith('licenses/') ? '.md' : null;
 
 const config = JSON.parse(await readFile(join(root, 'ops/release-config.json'), 'utf8'));
-if (!/^\d+\.\d+\.\d+(-[a-z0-9-]+)?$/.test(config.releaseVersion)) {
+if (!/^\d+\.\d+\.\d+(-[a-z0-9]+(?:[.-][a-z0-9]+)*)?$/.test(config.releaseVersion)) {
   throw new Error('Ungültige Release-Version in ops/release-config.json.');
 }
 

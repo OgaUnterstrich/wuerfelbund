@@ -67,6 +67,18 @@ test('WCAG: Startseite und Anmeldedialog ohne schwerwiegende automatisierte Befu
   await expect(page.locator('#cloud-auth-dialog')).toBeHidden();
 });
 
+test('B16: Kontoansicht mit 320px-Reflow als 200%-Layoutäquivalent – kein nativer Zoomnachweis', async ({ page }) => {
+  // Bei 200 % Zoom eines 640px-CSS-Viewport entspricht die Reflow-Breite 320px.
+  // Ein root-CSS-zoom=2 verzerrt dagegen die Layoutmessung und ist kein Browserzoom.
+  await page.setViewportSize({ width: 320, height: 800 });
+  await page.goto('/#settings');
+  await expect(page.locator('#view-settings')).toBeVisible();
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  expect(overflow, 'Kontoansicht soll bei 320px-Reflow nicht horizontal überlaufen').toBeLessThanOrEqual(1);
+  await auditVisiblePage(page, 'Kontoansicht 320px-Reflow');
+  await page.screenshot({ path: test.info().outputPath('konto-reflow-320.png'), fullPage: true });
+});
+
 test('WCAG: Charakterlabor und Formularfehler mit zugänglicher Fokusführung', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 740 });
   await page.goto('/studio.html#characters');

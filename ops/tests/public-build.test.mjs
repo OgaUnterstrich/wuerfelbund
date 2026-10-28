@@ -43,7 +43,7 @@ test('Pages-Artefakt enthält nur freigegebene Dateien, keine Entwicklungs-/Secr
 });
 
 test('Prüfbares Inhaltsinventar nennt jede öffentliche Quelldatei exakt mit SHA-256', () => {
-  assert.match(manifest.version, /^\d+\.\d+\.\d+(-[a-z0-9-]+)?$/);
+  assert.match(manifest.version, /^\d+\.\d+\.\d+(-[a-z0-9]+(?:[.-][a-z0-9]+)*)?$/);
   const paths = manifest.files.map(item => item.path);
   assert.equal(new Set(paths).size, paths.length);
   for (const item of manifest.files) {

@@ -32,12 +32,18 @@ jobs:
         run: npm run test:firestore
       - name: C3 · drei echte Auth-Konten und realistische Kampagne im Demo-Emulator
         run: npm run test:c3:emulator
+      - name: B16 · R1-Staging-Smoke rein lokal mit Demo-Auth und Demo-Firestore
+        run: npm run test:b16:smoke:emulator
       - name: Web-Artefakt mit Freigabeliste vorbereiten
         run: npm run build:public
       - name: Web-Artefakt auf unerwünschte Inhalte prüfen
         run: npm run test:public
       - name: C4 · Lizenz-, Datenfluss-, UX- und Freigabe-Audit
         run: npm run test:c4:audit
+      - name: B16 · Konto-, Datenfluss- und Freigabe-Audit
+        run: npm run test:b16:audit
+      - name: B16 · Dauer-Staging-Hosting-Sicherheitsprüfung (ohne Deployment)
+        run: npm run test:b16:staging-site
 
   browser:
     needs: logic

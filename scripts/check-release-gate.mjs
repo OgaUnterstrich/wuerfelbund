@@ -4,7 +4,7 @@ const root = new URL('../', import.meta.url);
 const config = JSON.parse(await readFile(new URL('ops/release-config.json', root), 'utf8'));
 const blockers = [];
 if (!/^1\.\d+\.\d+$/.test(String(config.releaseVersion || ''))) {
-  blockers.push('Keine v1-Freigabeversion (B14/B15 dürfen nicht öffentlich ausgerollt werden)');
+  blockers.push('Keine endgültige v1-Freigabeversion (ein Release Candidate bleibt gesperrt)');
 }
 for (const field of ['publicReleaseApproved', 'privacyReviewed', 'imprintReviewed', 'firebaseStagingVerified',
   'appCheckVerified', 'costAlertsVerified', 'accountDataRemovalVerified', 'retentionPolicyReviewed']) {

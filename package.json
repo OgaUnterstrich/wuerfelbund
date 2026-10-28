@@ -8,6 +8,11 @@
     "test:c3:emulator": "node scripts/run-c3.mjs emulator",
     "test:c3:staging": "node scripts/run-c3.mjs staging",
     "staging:deploy-rules": "node scripts/staging-deploy-rules.mjs",
+    "staging:site": "node scripts/staging-site.mjs",
+    "staging:site:prepare": "node scripts/staging-site.mjs --prepare-only",
+    "staging:smoke": "node scripts/b16-staging-smoke.mjs staging",
+    "staging:rules": "node scripts/staging-rules-b16.mjs",
+    "test:b16:smoke:emulator": "firebase emulators:exec --only auth,firestore --project demo-wuerfelbund 'node scripts/b16-staging-smoke.mjs emulator'",
     "test:browser": "playwright test",
     "test:browser:isolated": "npm run test:browser:isolated:chromium && npm run test:browser:isolated:firefox",
     "test:browser:isolated:chromium": "BROWSER_PROJECT=chromium firebase emulators:exec --only auth,firestore --project demo-wuerfelbund 'playwright test --project=chromium'",
@@ -15,6 +20,9 @@
     "build:public": "node scripts/build-public.mjs",
     "test:public": "node --test ops/tests/public-build.test.mjs",
     "test:c4:audit": "node --test ops/tests/gate-c.test.mjs",
+    "test:b16:audit": "node --test ops/tests/b16-release.test.mjs",
+    "test:b16:staging-site": "node --test ops/tests/b16-staging-site.test.mjs",
+    "test:b16:rc": "node scripts/run-b16-rc.mjs",
     "check:release": "node scripts/check-release-gate.mjs"
   },
   "devDependencies": {

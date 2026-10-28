@@ -1,5 +1,7 @@
 # Würfelbund B15-C4 – interne Gesamtabnahme / Gate C
 
+> **Nachträgliche verbindliche Betreiberbestätigung vom 28.10.2026:** Der C4-GitHub-Lauf für Repository `OgaUnterstrich/wuerfelbund`, Branch `b15-gate-c-ci-ux`, Commit `99d7bd8` wurde als erfolgreich abgeschlossen gemeldet. **B15-C4 ist nach Betreiberbestätigung abgeschlossen.** Die unten beschriebene lokale Gate-Sperre dokumentiert den *früheren* Nachweisstand vor dem externen CI-Lauf und darf C4 nicht wieder als unbestätigt einstufen. Native Screenreader-Ausgabe und die neue Kontoverwaltung gehören zur eigenständigen B16-RC-Prüfung. Keine Live-Veröffentlichung.
+
 **Datum:** 28.10.2026  
 **C4-Implementierung:** abgeschlossen; lokale Logik-, Emulator-, Datenfluss-, Lizenz-, UX-Struktur- und Build-Audits bestanden.  
 **Gate-C-Freigabeentscheidung: GESPERRT**, da der vollständige neue Browserlauf auf dem geänderten C4-Stand sowie native 200-%-Zoom- und gesprochene Screenreader-Stichproben nicht nachgewiesen sind. **Kein Produktions-Deployment, kein B16-Nutzertest.**

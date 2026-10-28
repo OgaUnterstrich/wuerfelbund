@@ -20,13 +20,15 @@
       <h2>Welche Daten die Anwendung verarbeitet</h2>
       <ul>
         <li>Lokale Charaktere, Chronik, Würfe, Kämpfe und eigene Regelpakete werden im Speicher deines Browsers verwaltet. Mit dem JSON-Export kannst du eine Kopie selbst sichern.</li>
-        <li>Bei freiwilliger Registrierung werden E-Mail-Adresse und Anmeldeinformationen über Firebase Authentication verarbeitet.</li>
+        <li>Bei freiwilliger Registrierung werden E-Mail-Adresse, ein technischer Konto-Identifier, Anmeldeinformationen sowie Status und Versand von Verifikations- bzw. Zurücksetzen-E-Mails über Firebase Authentication verarbeitet. Das Passwort wird von der Website nicht dauerhaft gespeichert.</li>
         <li>Erst ausdrücklich angelegte Online-Kampagnen und hochgeladene Figuren liegen in Cloud Firestore. Spielleitung und Mitglieder sehen abhängig von ihrer Rolle freigegebene Daten.</li>
-        <li>Bereits hochgeladene Daten werden durch das Löschen des lokalen Spielstands <strong>nicht</strong> aus dem Online-Konto entfernt. Es gibt noch keine fertige Konto-/Cloud-Löschoberfläche.</li>
+        <li>Bereits hochgeladene Daten werden durch das Löschen des lokalen Spielstands <strong>nicht</strong> aus dem Online-Konto entfernt. Unter „Einstellungen → Online-Konto und Cloud-Daten“ gibt es einen JSON-Export zugänglicher eigener Daten, E-Mail-Bestätigung, Passwortwiederherstellung und einen durch erneute Anmeldung geschützten Löschweg.</li>
+        <li>Bei der Kontoauflösung werden selbst zugängliche eigene Cloud-Figuren, private Regelpakete, Mitgliedschaften und das Firebase-Auth-Konto entfernt. Als Spielleitung muss zuvor die Kampagne übergeben werden; gemeinsame oder nicht mehr zugängliche Inhalte, frühere Publikationen, Providerprotokolle und verwaiste Daten benötigen eine überprüfte Betreiberbearbeitung. Eine vollständige DSGVO-Auskunft ersetzt der JSON-Export nicht.</li>
+        <li>Der neue Spielleiter erhält bei einer Übergabe Zugriff auf vorhandene SL-Notizen und Kampagnendaten. Persönliche oder vertrauliche SL-Notizen sollten vorher fachlich geprüft und gegebenenfalls entfernt werden. Das Löschen des Kontos löscht niemals fremde Figuren oder gemeinsame Kampagnen pauschal.</li>
         <li>GitHub Pages stellt die Website bereit; Google Firebase stellt die optionalen Online-Dienste bereit. Umfang und Orte der konkreten Datenverarbeitung müssen vor Live-Start abschließend dokumentiert werden.</li>
       </ul>
       <h2>Offen vor einer Veröffentlichung</h2>
-      <p>RELEASE_BLOCKER: Verantwortlicher und erreichbare Datenschutzkontaktadresse, Rechtsgrundlagen, Fristen, Betroffenenrechte, Empfänger/Drittlandtransfer sowie verifizierter Lösch- und Auskunftsweg fehlen. Bis zur Klärung darf diese Fassung nicht als öffentliche Datenschutzerklärung verwendet werden.</p>
+      <p>RELEASE_BLOCKER: Verantwortlicher und erreichbare Datenschutzkontaktadresse, Rechtsgrundlagen, konkret gebilligte Speicherfristen, Betroffenenrechte, Empfänger/Drittlandtransfer, vertragliche Dienstleisterrollen sowie der betreiberunterstützte Lösch- und Auskunftsweg müssen fachlich geprüft und eingetragen werden. Bis zur Klärung darf diese Fassung nicht als öffentliche Datenschutzerklärung verwendet werden.</p>
       <p>Einwilligung oder Registrierung auf Basis dieses Entwurfs ersetzt keine rechtliche Prüfung.</p>
     </section>
   </main>
