@@ -85,6 +85,7 @@ test('GitHub-Pages-Auslieferung wird nur manuell nach CI- und menschlichen Gates
   assert.match(verify, /pull_request:/);
   assert.match(verify, /npm run test:logic/);
   assert.match(verify, /npm run test:firestore/);
+  assert.match(verify, /npm run test:c3:emulator/);
   assert.match(verify, /npm run test:public/);
   assert.match(release, /workflow_dispatch:/);
   assert.doesNotMatch(release, /\n\s+push:\s*\n/);
@@ -92,6 +93,27 @@ test('GitHub-Pages-Auslieferung wird nur manuell nach CI- und menschlichen Gates
   assert.match(release, /npm run check:release/);
   assert.match(release, /needs: prepare/);
   assert.match(release, /environment:\s*\n\s+name: github-pages/);
+  assert.match(verify, /runs-on: ubuntu-24\.04/);
+  assert.match(verify, /actions\/checkout@v7/);
+  assert.match(verify, /actions\/setup-node@v7/);
+  assert.match(verify, /actions\/setup-java@v6/);
+  assert.match(verify, /actions\/upload-artifact@v7/);
+  assert.doesNotMatch(verify, /deploy-pages|upload-pages-artifact/);
+  assert.doesNotMatch(verify + release, /ubuntu-latest|actions\/setup-java@v4/);
+  assert.match(release, /actions\/deploy-pages@v5/);
+});
+
+test('C3-Sicherheit: echte Staging-Tests laufen nicht automatisch auf GitHub oder im Public-Bundle', () => {
+  const verify = readFileSync(join(root, '.github/workflows/verify.yml'), 'utf8');
+  const release = readFileSync(join(root, '.github/workflows/pages-release.yml'), 'utf8');
+  const packageInfo = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
+  assert.doesNotMatch(verify + release, /WB_C3_API_KEY|test:c3:staging|staging:deploy-rules/);
+  assert.match(packageInfo.scripts['test:c3:emulator'], /run-c3\.mjs emulator/);
+  assert.match(packageInfo.scripts['test:c3:staging'], /run-c3\.mjs staging/);
+  const runner = readFileSync(join(root, 'scripts/run-c3.mjs'), 'utf8');
+  assert.match(runner, /--project', 'demo-wuerfelbund'/);
+  assert.match(runner, /verifiedStagingTarget\(environment\)/);
+  assert.ok(!manifest.files.some(file => file.path.startsWith('scripts/') || file.path.startsWith('tests/')));
 });
 
 test('B15: Navigationsziele, lokale Weblinks und Modulimporte existieren im öffentlichen Build', () => {

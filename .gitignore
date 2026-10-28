@@ -9,3 +9,7 @@ playwright-report/
 .dist-staging/
 .test-browsers/
 .test-tools/
+.env
+.env.*
+!.env.example
+c3-staging-results/

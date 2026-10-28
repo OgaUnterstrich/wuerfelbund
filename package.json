@@ -5,6 +5,9 @@
   "scripts": {
     "test:logic": "node --test tests/*.test.mjs",
     "test:firestore": "firebase emulators:exec --only firestore --project demo-wuerfelbund 'node --test tests/firestore-security.emulator.mjs'",
+    "test:c3:emulator": "node scripts/run-c3.mjs emulator",
+    "test:c3:staging": "node scripts/run-c3.mjs staging",
+    "staging:deploy-rules": "node scripts/staging-deploy-rules.mjs",
     "test:browser": "playwright test",
     "test:browser:isolated": "npm run test:browser:isolated:chromium && npm run test:browser:isolated:firefox",
     "test:browser:isolated:chromium": "BROWSER_PROJECT=chromium firebase emulators:exec --only auth,firestore --project demo-wuerfelbund 'playwright test --project=chromium'",
